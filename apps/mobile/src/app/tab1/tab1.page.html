@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title> Today </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Today</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12>
+        <ion-chip>
+          <ion-label>#171</ion-label>
+        </ion-chip>
+        <ion-chip>
+          <ion-label>For Time</ion-label>
+        </ion-chip>
+        <ion-chip>
+          <ion-label>TC:20'</ion-label>
+        </ion-chip>
+        <ion-chip>
+          <ion-label>5 Rounds</ion-label>
+        </ion-chip>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col col-6>Exercise</ion-col>
+      <ion-col col-3>Reps</ion-col>
+      <ion-col col-3>Equipment</ion-col>
+    </ion-row>
+    <ion-row *ngFor="let exercise of exercises">
+      <ion-col col-6>{{exercise.name}}</ion-col>
+      <ion-col col-3>{{exercise.reps}}</ion-col>
+      <ion-col col-3>{{exercise.equipment}}</ion-col>
+    </ion-row>
+  </ion-grid>
+  
+</ion-content>
