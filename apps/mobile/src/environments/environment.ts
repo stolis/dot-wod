@@ -4,6 +4,8 @@
 
 export const environment = {
   production: false,
+  apiURL: 'https://loxabbdxenimehnxkrsc.supabase.co',
+  apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNjQyODQ3MDY5LCJleHAiOjE5NTg0MjMwNjl9.MQd_PGOdiwQGuj901Oxk8YLDLju27dcSRFfn1Fe--fk'
 };
 
 /*

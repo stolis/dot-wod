@@ -2,34 +2,26 @@
   "version": 2,
   "projects": {
     "api": {
+      "projectType": "library",
       "root": "libs/api",
       "sourceRoot": "libs/api/src",
-      "projectType": "library",
+      "prefix": "dot-wod",
       "targets": {
-        "build": {
-          "executor": "@nrwl/node:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/libs/api",
-            "tsConfig": "libs/api/tsconfig.lib.json",
-            "packageJson": "libs/api/package.json",
-            "main": "libs/api/src/index.ts",
-            "assets": ["libs/api/*.md"]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["libs/api/**/*.ts"]
-          }
-        },
         "test": {
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/api"],
           "options": {
             "jestConfig": "libs/api/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/api/src/**/*.ts",
+              "libs/api/src/**/*.html"
+            ]
           }
         }
       },

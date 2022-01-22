@@ -47,3 +47,5 @@ export class Exercise {
   attribute: ExerciseAttributeEnum | undefined;
   modality: ModalityEnum | undefined;
 }
+
+

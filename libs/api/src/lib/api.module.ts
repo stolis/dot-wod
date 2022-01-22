@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ProviderService } from './services/provider.service';
 
-@Module({
-  controllers: [],
-  providers: [],
-  exports: [],
+@NgModule({
+  imports: [CommonModule],
+  providers: [ProviderService]
 })
 export class ApiModule {}
