@@ -1,6 +1,12 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Today </ion-title>
+    <ion-chip color="primary">
+      <ion-title> Today </ion-title>
+    </ion-chip>
+    <ion-chip outline color="primary"> 10/10/2021 </ion-chip>
+    <ion-chip outline color="primary">
+      <ion-label>W</ion-label>
+    </ion-chip>
   </ion-toolbar>
 </ion-header>
 
@@ -11,33 +17,32 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-grid>
+  <ion-grid *ngFor="let wod of wods">
     <ion-row>
       <ion-col col-12>
         <ion-chip>
-          <ion-label>#171</ion-label>
+          <ion-label>{{'#' + wod.id}}</ion-label>
         </ion-chip>
         <ion-chip>
-          <ion-label>For Time</ion-label>
+          <ion-label>{{wod.format}}</ion-label>
         </ion-chip>
         <ion-chip>
-          <ion-label>TC:20'</ion-label>
+          <ion-label>{{'TC: ' + wod.timecap + "'"}}</ion-label>
         </ion-chip>
         <ion-chip>
-          <ion-label>5 Rounds</ion-label>
+          <ion-label>{{wod.rounds + ' Rounds'}}</ion-label>
         </ion-chip>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col col-6>Exercise</ion-col>
+    <ion-row class="grid-header">
+      <ion-col color="primary" col-6>Exercise</ion-col>
       <ion-col col-3>Reps</ion-col>
       <ion-col col-3>Equipment</ion-col>
     </ion-row>
-    <ion-row *ngFor="let exercise of exercises">
+    <ion-row *ngFor="let exercise of wod.exercises">
       <ion-col col-6>{{exercise.name}}</ion-col>
       <ion-col col-3>{{exercise.reps}}</ion-col>
       <ion-col col-3>{{exercise.equipment}}</ion-col>
     </ion-row>
   </ion-grid>
-  
 </ion-content>
