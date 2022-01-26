@@ -14,3 +14,10 @@ export const DOTWOD_EXERCISETYPES = {
 } as const;
 
 export type DOTWOD_EXERCISETYPES = typeof DOTWOD_EXERCISETYPES[keyof typeof DOTWOD_EXERCISETYPES];
+
+export const DB_TABLES = {
+    SCHEDULES: 'schedule',
+    EQUIPMENT: 'equipment'
+}
+
+export type DB_TABLES = typeof DB_TABLES[keyof typeof DB_TABLES];

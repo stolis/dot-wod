@@ -1,0 +1,84 @@
+<ion-list>
+    <ion-item-sliding #schedulesSlide *ngFor="let item of svc.schedules">
+        <ion-item *ngIf="item.id === editItem?.id || !editItem ">
+          <ion-label color="item.isActive ? 'blue' : 'secondary'">{{ item.schedule_name }}
+            <p *ngIf="item.days">Cycles every {{item.days > 1 ? item.days + ' days' : item.days + ' day'}} and is currently at day {{item.day }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option (click)="deleteWithWarning(item, schedulesSlide)" color="danger">
+            <ion-icon name="trash" slot="icon-only"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+        <ion-item-options side="start">
+          <ion-item-option (click)="toggleEdit(item, schedulesSlide)" color="warning">
+            <ion-icon name="create" slot="icon-only"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+      <form *ngIf="editItem" #schedulesForm>
+        <ion-grid>
+          <ion-row color="primary" justify-content-center>
+            <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
+              <div padding>
+                <ion-item>
+                  <ion-label position="floating">Name</ion-label>
+                  <ion-input name="equipment_name" placeholder="Equipment name" required [(ngModel)]="editItem.schedule_name"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Cycles every (days)</ion-label>
+                  <ion-input name="weight" type="numeric" [(ngModel)]="editItem.days" (ngModelChange)="updatePrograms()"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="expand">Programs</ion-label>
+                </ion-item>
+                <ion-item>
+                    <ion-grid>
+                        <ion-row *ngFor="let programDay of editItem.program; let i = index;">
+                            <ion-col>
+                                <ion-item>
+                                    <ion-label>Day {{i + 1}}</ion-label>
+                                </ion-item>
+                            </ion-col>
+                            <ion-col>
+                                <ion-item>
+                                    <ion-select value="type" interface="action-sheet">
+                                        <ion-select-option value="'Cardio'">Cardio</ion-select-option>
+                                        <ion-select-option value="'Weightlifting'">Weightlifting</ion-select-option>
+                                    </ion-select>
+                                </ion-item>
+                            </ion-col>
+                            <ion-col>
+                                <ion-item>
+                                    <ion-select value="type" interface="action-sheet">
+                                        <ion-select-option value="'Cardio'">Cardio</ion-select-option>
+                                        <ion-select-option value="'Weightlifting'">Weightlifting</ion-select-option>
+                                    </ion-select>
+                                </ion-item>
+                            </ion-col>
+                            <ion-col>
+                                <ion-item>
+                                    <ion-select value="type" interface="action-sheet">
+                                        <ion-select-option value="'Cardio'">Cardio</ion-select-option>
+                                        <ion-select-option value="'Weightlifting'">Weightlifting</ion-select-option>
+                                    </ion-select>
+                                </ion-item>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-item>
+              </div>
+              <ion-item>
+                <ion-button size="large" type="button" expand="block" (click)="applyEdit()">Apply</ion-button>
+                <ion-button color="secondary" size="large" type="button" expand="block" (click)="cancelEdit()">Cancel</ion-button>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+</ion-list>
+<ion-fab vertical="center" horizontal="end" slot="fixed">
+    <ion-fab-button>
+        <ion-icon name="add" (click)="toggleAdd()"></ion-icon>
+    </ion-fab-button>
+</ion-fab>

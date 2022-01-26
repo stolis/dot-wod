@@ -1,8 +1,6 @@
 import { DOTWOD_EXERCISETYPES } from "../types/ui";
 
-export interface ISchedule extends IModification {
-  id?: number;
-  user_id?: string;
+export interface ISchedule extends IRow {
   schedule_name?: string;
   program?: Array<IProgram>;
   days?: number;
@@ -12,19 +10,25 @@ export interface ISchedule extends IModification {
 
 export interface IProgram {
   day?: number;
-  exerciseType?: DOTWOD_EXERCISETYPES;
+  exerciseType?: Array<DOTWOD_EXERCISETYPES>;
 }
 
-export interface IEquipment extends IModification {
-  id?: number;
-  user_id?: string;
+export interface IEquipment extends IRow {
   equipment_name?: string;
   weight?: number;
   height?: number;
 }
   
-export interface IModification {
+export interface IRow {
+  id?: number;
+  user_id?: string;
   inserted_at?: Date;
   modified_at?: Date;
   is_deleted?: boolean;
+}
+
+export interface IMessage {
+  eventType: 'INSERT' | 'UPDATE' | 'DELETE' | 'ERROR';
+  payload: ISchedule | IEquipment;
+  errors: any;
 }

@@ -43,7 +43,7 @@ export class LoginPage implements OnInit {
 
     this.provider.signIn(this.credentials?.value).then(async data => {
       await loading.dismiss();
-      this.router.navigateByUrl('/tabs/tab1', { replaceUrl: true });
+      this.router.navigateByUrl('/tabs/options', { replaceUrl: true });
     }, 
     async err => {
       await loading.dismiss();

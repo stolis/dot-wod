@@ -1,9 +1,10 @@
-import { Inject, inject, Injectable } from '@angular/core';
-import { createClient, PostgrestResponse, SupabaseClient, UserCredentials } from '@supabase/supabase-js';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Inject, Injectable } from '@angular/core';
+import { createClient, SupabaseClient, User, UserCredentials } from '@supabase/supabase-js';
+import { BehaviorSubject } from 'rxjs';
 import { ENVIRONMENT } from '../environment/environemnt.token';
 import { Environment } from '../environment/environment.interface';
-import { IEquipment, ISchedule } from '../interfaces/dto';
+import { IEquipment, IMessage, IRow } from '../interfaces/dto';
+import { DB_TABLES } from '../types/ui';
 
 const EQUIPMENT_DB = 'equipment';
 
@@ -14,29 +15,31 @@ export class ProviderService {
 
   dbClient: SupabaseClient;
 
-  private _currentUser: BehaviorSubject<any> = new BehaviorSubject(null);
+  //#region Properties
 
-  private _schedules: BehaviorSubject<Array<ISchedule>> = new BehaviorSubject([] as Array<ISchedule>);
-  public schedules$ = this._schedules.asObservable;
+  private _message: BehaviorSubject<IMessage> = new BehaviorSubject({} as IMessage);
+  public message$ = this._message.asObservable;
 
-  public set schedules(value: Array<ISchedule>) {
-    this._schedules.next(value);
+  public set message(value: IMessage){
+    this._message.next(value);
   }
 
-  public get schedules(): Array<ISchedule> {
-    return this._schedules.value;
+  public get message() {
+    return this._message.value;
   }
 
-  private _equipment: BehaviorSubject<Array<IEquipment>> = new BehaviorSubject([] as Array<IEquipment>);
-  public equipment$ = this._equipment.asObservable;
+  private _user: BehaviorSubject<any> = new BehaviorSubject(null);
+  public user$ = this._user.asObservable;
 
-  public set equipment(value: Array<IEquipment>) {
-    this._equipment.next(value);
+  public set user(value: User) {
+    this._user.next(value);
   }
 
-  public get equipment(): Array<IEquipment> {
-    return this._equipment.value;
+  public get user() {
+    return this._user.value;
   }
+
+  //#endregion
 
   constructor(@Inject(ENVIRONMENT) private env: Environment) { 
     this.dbClient = createClient(env.apiURL,env.apiKey, {
@@ -45,15 +48,15 @@ export class ProviderService {
     });
     this.dbClient.auth.onAuthStateChange((event, session) => {
       if (event == 'SIGNED_IN') {
-        this._currentUser.next(session?.user);
-        this.loadEquipment();
-        this.onEquipmentChanged();
+        this._user.next(session?.user);
       }
       else {
-        this._currentUser.next(false);
+        this._user.next(false);
       }
     });
   }
+
+  //#region User/Authentication
 
   loadUser() {
 
@@ -88,71 +91,53 @@ export class ProviderService {
     this.dbClient.removeAllSubscriptions();
   }
 
-  onEquipmentChanged() {
-    this.dbClient.from(EQUIPMENT_DB).on('*', payload => {
-     switch(payload.eventType) {
-       case 'DELETE': {
-         const deleted: IEquipment = payload.old;
-         this.equipment = this.equipment.filter( eq => eq.id !== deleted.id );
-         break;
-       }
-       case 'INSERT': {
-         const inserted: IEquipment = payload.new;
-         this.equipment = [...this.equipment, inserted];
-         break;
-       }
-       case 'UPDATE': {
-         const updated: IEquipment = payload.new;
-         this.equipment = this.equipment.map(eq => {
-           if (eq.id === updated.id){
-             eq = updated;
-           }
-           return eq;
-         });
-         break;
-       }
+  //#endregion
 
-     }
-    }).subscribe();             
-  } 
 
-  async loadEquipment() {
-    const query = await this.dbClient.from(EQUIPMENT_DB).select('*');
-    console.log('query: ', query);
-    this._equipment.next(query.data as Array<IEquipment>);
+  async get(table: DB_TABLES){
+    return await this.dbClient.from(table).select('*');
   }
 
-  async addEquipment(equipment: IEquipment){
+  async add(table: DB_TABLES, item: any){
     const userId = this.dbClient.auth.user()?.id;
-    const equipmentExists = this.equipment.some(eq => eq.equipment_name === equipment.equipment_name && (eq.weight === equipment.weight || eq.height === equipment.height));
-    if (userId && !equipmentExists){
-      equipment.user_id = userId;
-      const result = await this.dbClient.from(EQUIPMENT_DB).insert(equipment);
-    }
+    item.user_id = userId;
+    return await this.dbClient.from(table).insert(item);
   }
 
-  async removeEquipment(id: number) {
-    await this.dbClient.from(EQUIPMENT_DB).delete().match({ id });
-    /* .then( (resp: PostgrestResponse<any>) => { 
-      if (!resp.error){
-        this.equipment = this.equipment.filter( eq => eq.id !== id);
+  async update(table: DB_TABLES, item: any){
+    const id = item.id;
+    return await this.dbClient.from(table).update(item).match({ id });
+  }
+
+  async remove(table: DB_TABLES, id: number){
+    return await this.dbClient.from(table).delete().match({ id });
+  }
+
+  listenTo(table: DB_TABLES, collection: BehaviorSubject<Array<IRow>>){
+    this.dbClient.from(table).on('*', payload => { 
+      switch(payload.eventType) {
+        case 'DELETE': {
+          const deleted: IEquipment = payload.old;
+          collection.next(collection.value.filter( item => item.id !== deleted.id ));
+          break;
+        }
+        case 'INSERT': {
+          const inserted: IEquipment = payload.new;
+          collection.next([...collection.value, inserted]);
+          break;
+        }
+        case 'UPDATE': {
+          const updated: IEquipment = payload.new;
+          collection.next(collection.value.map(item => {
+            if (item.id === updated.id){
+              item = updated;
+            }
+            return item;
+          }));
+          break;
+        }
       }
-      else {
-        console.error(resp.error);
-      }
-    }); */
+    }).subscribe();
   }
-
-  async updateEquipment(equipment: IEquipment) {
-    const id = equipment.id;
-    const equipment_name = equipment.equipment_name;
-    const weight = equipment.weight;
-    const height = equipment.height;
-    const modified_at = new Date();
-    await this.dbClient.from(EQUIPMENT_DB)
-      .update({ equipment_name, weight, height, modified_at })
-      .match({ id })
-  }
-
   
 }

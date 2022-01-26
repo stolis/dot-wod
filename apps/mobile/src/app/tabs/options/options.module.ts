@@ -8,6 +8,11 @@ import { OptionsPage } from './options.page';
 import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
 import { OptionsPageRoutingModule } from './options-routing.module';
+import { SchedulesComponent } from './schedules/schedules.component';
+import { EquipmentComponent } from './equipment/equipment.component';
+import { FormatsComponent } from './formats/formats.component';
+import { ExercisesComponent } from './exercises/exercises.component';
+import { OptionsDirective } from './options.directive';
 
 @NgModule({
   imports: [
@@ -19,6 +24,6 @@ import { OptionsPageRoutingModule } from './options-routing.module';
     RouterModule.forChild([{ path: '', component: OptionsPage }]),
     OptionsPageRoutingModule,
   ],
-  declarations: [OptionsPage],
+  declarations: [OptionsPage, SchedulesComponent, EquipmentComponent, FormatsComponent, ExercisesComponent, OptionsDirective],
 })
 export class OptionsPageModule {}
