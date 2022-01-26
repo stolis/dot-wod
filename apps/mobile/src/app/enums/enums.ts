@@ -1,3 +1,10 @@
+export enum CategoryEnum {
+  Schedules = 'Schedules',
+  Formats = 'Formats',
+  Exercises = 'Exercises',
+  Equipment = 'Equipment'
+}
+
 export enum FormatEnum {
   ForTime = 1,
   Amrap,

@@ -10,22 +10,22 @@ const routes: Routes = [
       {
         path: 'login',
         loadChildren: () =>
-          import('../login/login.module').then((m) => m.LoginModule)
+          import('./login/login.module').then((m) => m.LoginModule)
       },
       {
-        path: 'tab1',
+        path: 'today',
         loadChildren: () =>
-          import('../tab1/tab1.module').then((m) => m.Tab1PageModule),
+          import('./today/today.module').then((m) => m.TodayPageModule),
       },
       {
-        path: 'tab2',
+        path: 'history',
         loadChildren: () =>
-          import('../tab2/tab2.module').then((m) => m.Tab2PageModule),
+          import('./history/history.module').then((m) => m.HistoryPageModule),
       },
       {
-        path: 'equipment',
+        path: 'options',
         loadChildren: () =>
-          import('../tab3/tab3.module').then((m) => m.Tab3PageModule),
+          import('./options/options.module').then((m) => m.OptionsPageModule),
       },
       {
         path: '',

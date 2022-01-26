@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'dot-wod-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss'],
+  selector: 'dot-wod-today',
+  templateUrl: 'today.page.html',
+  styleUrls: ['today.page.scss'],
 })
-export class Tab1Page {
+export class TodayPage {
   wods = [
     {
       id: 171,

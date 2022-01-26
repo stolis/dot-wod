@@ -1,9 +1,9 @@
 import { Inject, inject, Injectable } from '@angular/core';
-import { createClient, SupabaseClient, UserCredentials } from '@supabase/supabase-js';
+import { createClient, PostgrestResponse, SupabaseClient, UserCredentials } from '@supabase/supabase-js';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ENVIRONMENT } from '../environment/environemnt.token';
 import { Environment } from '../environment/environment.interface';
-import { IEquipment } from '../interfaces/dto';
+import { IEquipment, ISchedule } from '../interfaces/dto';
 
 const EQUIPMENT_DB = 'equipment';
 
@@ -13,7 +13,20 @@ const EQUIPMENT_DB = 'equipment';
 export class ProviderService {
 
   dbClient: SupabaseClient;
+
   private _currentUser: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  private _schedules: BehaviorSubject<Array<ISchedule>> = new BehaviorSubject([] as Array<ISchedule>);
+  public schedules$ = this._schedules.asObservable;
+
+  public set schedules(value: Array<ISchedule>) {
+    this._schedules.next(value);
+  }
+
+  public get schedules(): Array<ISchedule> {
+    return this._schedules.value;
+  }
+
   private _equipment: BehaviorSubject<Array<IEquipment>> = new BehaviorSubject([] as Array<IEquipment>);
   public equipment$ = this._equipment.asObservable;
 
@@ -31,10 +44,10 @@ export class ProviderService {
       persistSession: true
     });
     this.dbClient.auth.onAuthStateChange((event, session) => {
-      console.warn('session: ', session);
       if (event == 'SIGNED_IN') {
         this._currentUser.next(session?.user);
         this.loadEquipment();
+        this.onEquipmentChanged();
       }
       else {
         this._currentUser.next(false);
@@ -75,6 +88,34 @@ export class ProviderService {
     this.dbClient.removeAllSubscriptions();
   }
 
+  onEquipmentChanged() {
+    this.dbClient.from(EQUIPMENT_DB).on('*', payload => {
+     switch(payload.eventType) {
+       case 'DELETE': {
+         const deleted: IEquipment = payload.old;
+         this.equipment = this.equipment.filter( eq => eq.id !== deleted.id );
+         break;
+       }
+       case 'INSERT': {
+         const inserted: IEquipment = payload.new;
+         this.equipment = [...this.equipment, inserted];
+         break;
+       }
+       case 'UPDATE': {
+         const updated: IEquipment = payload.new;
+         this.equipment = this.equipment.map(eq => {
+           if (eq.id === updated.id){
+             eq = updated;
+           }
+           return eq;
+         });
+         break;
+       }
+
+     }
+    }).subscribe();             
+  } 
+
   async loadEquipment() {
     const query = await this.dbClient.from(EQUIPMENT_DB).select('*');
     console.log('query: ', query);
@@ -88,10 +129,30 @@ export class ProviderService {
       equipment.user_id = userId;
       const result = await this.dbClient.from(EQUIPMENT_DB).insert(equipment);
     }
-    
   }
 
-  handleEquipmentChanged() {
-
+  async removeEquipment(id: number) {
+    await this.dbClient.from(EQUIPMENT_DB).delete().match({ id });
+    /* .then( (resp: PostgrestResponse<any>) => { 
+      if (!resp.error){
+        this.equipment = this.equipment.filter( eq => eq.id !== id);
+      }
+      else {
+        console.error(resp.error);
+      }
+    }); */
   }
+
+  async updateEquipment(equipment: IEquipment) {
+    const id = equipment.id;
+    const equipment_name = equipment.equipment_name;
+    const weight = equipment.weight;
+    const height = equipment.height;
+    const modified_at = new Date();
+    await this.dbClient.from(EQUIPMENT_DB)
+      .update({ equipment_name, weight, height, modified_at })
+      .match({ id })
+  }
+
+  
 }
