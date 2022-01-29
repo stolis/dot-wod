@@ -4,7 +4,6 @@ export function enum_byValue<T extends {[index:string]:string}>(myEnum:T, enumVa
 }
 
 export function toDTO(item: any, properties: Array<string>) {
-    console.log('inside: ', item, properties);
     if (properties?.length > 0){
         const removeProp = properties.pop();
         const { [removeProp!]: remove, ...rest } = item;
