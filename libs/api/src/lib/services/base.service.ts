@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ProviderService } from '@dot-wod/api';
 import { BehaviorSubject } from 'rxjs';
+import { toDTO } from '../functions/helpers';
 import { IRow } from '../interfaces/dto';
 import { DB_TABLES } from '../types/ui';
 
@@ -32,6 +33,7 @@ export class BaseService {
     this.collection?.forEach( sc => { 
       sc.subscriptions = sc.subscriptions ?? [];
       sc.isSubscribed = sc.subscriptions?.includes(this.api.user.id);
+      sc.toDTO = toDTO;
     });
   }
 
@@ -41,7 +43,7 @@ export class BaseService {
     });
   }
 
-  async updateMultiple(items: Array<IRow>) {
+  async updateMultiple(items: Array<any>) {
     this.db_tables.forEach( (db_table, index) => {
       this.update(items[index],db_table);
     });
@@ -59,8 +61,7 @@ export class BaseService {
 
     if (!itemExists) {
       item.user_id = this.api.user.id;
-      const itemDTO = Object.assign({},item);
-      delete itemDTO.isSubscribed;
+      const itemDTO = item.toDTO ? item.toDTO(item,['isSubscribed']) : item;
       const added = (await this.api.add(table,itemDTO)).data;
       if (added && added?.length > 0 && added[0].id) {
         item.id = added[0].id;
@@ -71,12 +72,16 @@ export class BaseService {
     }
   }
 
-  async update(item: IRow, table?: DB_TABLES){
+  async update(item: any, table?: DB_TABLES){
       table = table ?? this.db_tables[0];
-      item.modified_at = new Date();
-      const itemDTO = Object.assign({},item);
-      delete itemDTO.isSubscribed;
+      
+      if (Object(item).hasOwnProperty('modified_at')){
+        item.modified_at = new Date();
+      }
+
+      const itemDTO = item.toDTO ? item.toDTO(item,['isSubscribed']) : item;
       const updated = (await this.api.update(table,itemDTO)).data;
+
       if (!(updated && updated?.length > 0 && updated[0].id)) {
         console.error('Item was not updated!', updated);
       }

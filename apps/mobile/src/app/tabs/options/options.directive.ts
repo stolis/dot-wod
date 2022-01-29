@@ -1,5 +1,5 @@
 import { Directive, QueryList, ViewChildren } from '@angular/core';
-import { BaseServiceClass, DB_TABLES, IEquipment, IRow, ISchedule, ProviderService } from '@dot-wod/api';
+import { BaseServiceClass, DB_TABLES, IRow, ProviderService, toDTO } from '@dot-wod/api';
 import { AlertController, IonItemSliding } from '@ionic/angular';
 import { BaseService } from 'libs/api/src/lib/services/base.service';
 
@@ -17,7 +17,7 @@ export class OptionsDirective {
   constructor(public svc: BaseServiceClass, public api: ProviderService, public alert: AlertController) { }
 
   toggleAdd(){
-    this.svc.collection = [...this.svc.collection, { user_id: this.api.user.id }];
+    this.svc.collection = [...this.svc.collection, { user_id: this.api.user.id, toDTO: toDTO }];
     this.editItem = this.svc.collection[this.svc.collection.length - 1];
     const self = this;
     setTimeout(() => { self.slides.last.open('start'); }, 1000);
@@ -36,7 +36,6 @@ export class OptionsDirective {
         this.svc.update(this.editItem);
       }
       else {
-        console.log(this.editItem);
         this.svc.add(this.editItem);
       }
     }

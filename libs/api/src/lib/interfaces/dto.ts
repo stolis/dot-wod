@@ -1,5 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 import { DB_TABLES, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS } from "../types/ui";
+import { toDTO } from '../functions/helpers';
 
 export interface IRow {
   id?: number;
@@ -10,6 +11,7 @@ export interface IRow {
   is_deleted?: boolean;
   subscriptions?: Array<string>;
   isSubscribed?: boolean;
+  toDTO: typeof toDTO;
 }
 
 //#region Main Entities

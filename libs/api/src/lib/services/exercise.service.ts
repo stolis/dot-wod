@@ -15,13 +15,11 @@ export class ExerciseService extends BaseService implements BaseServiceClass {
     this.load(this.api.user.id);
   }
 
-  /* async testLoad(){
-    this.collection = (await this.api.dbClient.from('exercise')
-    //.select('*,exercise_equipment_map(*)')).data as Array<IRow>;
-    .select('*, exercise_equipment_map!inner(*)')
-    .eq('exercise_equipment_map.user_id',this.api.user.id)).data as Array<IRow>;
-    console.log(this.collection);
-  } */
+  override async updateMultiple(items: Array<any>): Promise<void> {
+    const removeProp = 'exercise_equipment_map';
+    const itemsDTO = items.map( item => item.toDTO ? item.toDTO(item, [removeProp]) : item);
+    super.updateMultiple(itemsDTO);
+  }
 
   get exercises() {
     return this.collection as Array<IExercise>;

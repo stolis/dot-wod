@@ -18,8 +18,20 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
     super(svc,api,alert);
   }
 
-  ngOnInit(): void {
-    
+  ngOnInit(): void { }
+
+  override applyEdit(index: number) {
+    if (this.editItem){
+      if (this.editItem.id && this.editItem.id > 0){
+        this.svc.updateMultiple([this.editItem, this.editItem.exercise_equipment_map[0]]);
+      }
+      else {
+        this.svc.add(this.editItem);
+      }
+    }
+    this.editItem = undefined;
+    const slide = this.slides.get(index) as IonItemSliding;
+    slide.close();
   }
 
   setType(event: any) {
