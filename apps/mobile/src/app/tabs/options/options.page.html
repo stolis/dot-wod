@@ -16,7 +16,6 @@
     </ion-segment>
   </ion-toolbar>
 </ion-header>
-
 <ion-content [fullscreen]="true" [ngSwitch]="viewingCategory">
   <dot-wod-schedules *ngSwitchCase="categories.SCHEDULES"></dot-wod-schedules>
   <dot-wod-formats *ngSwitchCase="categories.FORMATS"></dot-wod-formats>

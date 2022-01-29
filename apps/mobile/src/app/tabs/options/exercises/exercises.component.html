@@ -1,1 +1,71 @@
-<p>exercises works!</p>
+<ion-content>
+    <ion-list-header *ngIf="!editItem">
+      <ion-button (click)="toggleAdd()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+      <ion-button (click)="refresh()">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-button>
+    </ion-list-header>
+    <ion-list>
+      <ion-item-sliding #schedulesSlide *ngFor="let item of svc.exercises; let i = index;">
+        <ion-item *ngIf="item.id === editItem?.id || !editItem">
+          <ion-label color="item.isActive ? 'blue' : 'secondary'">{{ item.name }}
+            <!-- <p *ngIf="item.days">Cycles every {{item.days > 1 ? item.days + ' days' : item.days + ' day'}}</p>
+            <p *ngIf="item?.isSubscribed">is currently at day {{item.day }}</p> -->
+          </ion-label>
+          <ion-toggle *ngIf="!editItem" slot="end" [value]="item?.isSubscribed" [checked]="item?.isSubscribed" (ionChange)="toggleSubscription(item)"></ion-toggle>
+        </ion-item>
+        <ion-item-options *ngIf="item.user_id === api.user?.id" side="end">
+          <ion-item-option (click)="deleteWithWarning(item)" color="danger">
+            <ion-icon name="trash" slot="icon-only"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+        <ion-item-options *ngIf="item.user_id === api.user?.id" side="start">
+          <ion-item-option *ngIf="!editItem && item.id" (click)="toggleEdit(item, i)" color="warning">
+            <ion-icon name="create" slot="icon-only"></ion-icon>
+          </ion-item-option>
+          <ion-item-option *ngIf="item.id === editItem?.id" (click)="applyEdit(i)">
+            <ion-icon name="checkmark-outline" slot="icon-only"></ion-icon>
+          </ion-item-option>
+          <ion-item-option *ngIf="item.id === editItem?.id" (click)="cancelEdit(i)" color="secondary">
+            <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+      <form *ngIf="editItem as IExercise" #exercisesForm>
+        <ion-grid>
+          <ion-row color="primary">
+            <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
+                <div padding>
+                  <ion-item>
+                    <ion-label position="floating">Name</ion-label>
+                    <ion-input name="exercise_name" required [(ngModel)]="editItem.name"></ion-input>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">Type</ion-label>
+                    <ion-select [value]="editItem.type" (ionChange)="setType($event)" multiple="true" [compareWith]="compareWith">
+                        <ion-select-option *ngFor="let type of exerciseTypes" [value]="type">{{type}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                  <ion-item>
+                      <ion-label position="floating">Muscle Groups</ion-label>
+                      <ion-select [value]="editItem.musclegroups" (ionChange)="setMuscleGroup($event)" multiple="true" [compareWith]="compareWith">
+                        <ion-select-option *ngFor="let muscle of muscleGroups" [value]="muscle">{{muscle}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">Equipment</ion-label>
+                    <ion-select [value]="editItem.exercise_equipment_map[0].equipment" (ionChange)="setEquipment($event)" multiple="true" [compareWith]="compareWith">
+                      <ion-select-option [value]="-1">Body Weight</ion-select-option>
+                      <ion-select-option *ngFor="let item of equipSvc.equipment" [value]="item.id">{{item.name}} {{'(' + (item.weight ? item.weight + ' kgr' : item.height + ' cm' )+ ')' }}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                </div>
+              </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>
+    </ion-list>
+  </ion-content>
+  

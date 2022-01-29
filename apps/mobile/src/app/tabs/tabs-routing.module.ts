@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+import { AuthGuard } from '@dot-wod/api';
 
 const routes: Routes = [
   {
@@ -9,23 +10,22 @@ const routes: Routes = [
     children: [
       {
         path: 'login',
-        loadChildren: () =>
-          import('./login/login.module').then((m) => m.LoginModule)
+        loadChildren: () => import('./login/login.module').then((m) => m.LoginModule)
       },
       {
         path: 'today',
-        loadChildren: () =>
-          import('./today/today.module').then((m) => m.TodayPageModule),
+        loadChildren: () => import('./today/today.module').then((m) => m.TodayPageModule),
+        canActivate: [AuthGuard]
       },
       {
         path: 'history',
-        loadChildren: () =>
-          import('./history/history.module').then((m) => m.HistoryPageModule),
+        loadChildren: () => import('./history/history.module').then((m) => m.HistoryPageModule),
+        canActivate: [AuthGuard]
       },
       {
         path: 'options',
-        loadChildren: () =>
-          import('./options/options.module').then((m) => m.OptionsPageModule),
+        loadChildren: () => import('./options/options.module').then((m) => m.OptionsPageModule),
+        canActivate: [AuthGuard]
       },
       {
         path: '',
