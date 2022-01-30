@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ProviderService } from '@dot-wod/api';
 import { BehaviorSubject } from 'rxjs';
 import { toDTO } from '../functions/helpers';
-import { IRow } from '../interfaces/dto';
+import { IExercise, IRow } from '../interfaces/dto';
 import { DB_TABLES } from '../types/ui';
 
 @Injectable({
@@ -30,7 +30,8 @@ export class BaseService {
     else {
       this.collection = (await this.api.getJoined(this.db_tables,userId)).data as Array<IRow>;
     }
-    this.collection?.forEach( sc => { 
+    (this.collection as Array<IExercise>)?.forEach( sc => {
+      sc.exercise_equipment_map = sc.exercise_equipment_map && sc.exercise_equipment_map[0] ? sc.exercise_equipment_map : [{ exerciseId: sc.id, user_id: userId }];  
       sc.subscriptions = sc.subscriptions ?? [];
       sc.isSubscribed = sc.subscriptions?.includes(this.api.user.id);
       sc.toDTO = toDTO;

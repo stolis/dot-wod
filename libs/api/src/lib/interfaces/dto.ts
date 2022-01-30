@@ -48,10 +48,10 @@ export interface IExerciseType {
 }
 
 export interface IExerciseEquipment {
-  id: number;
-  user_id: string;
-  exerciseId: number;
-  equipment: Array<IEquipment>;
+  id?: number;
+  user_id?: string;
+  exerciseId?: number;
+  equipment?: Array<IEquipment>;
 }
 
 //#endregion

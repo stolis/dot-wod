@@ -99,17 +99,16 @@ export class ProviderService {
   async getJoined(tables: Array<DB_TABLES>, userId?: string) {
     if (userId) {
       return await this.dbClient.from(tables[0])
-      .select(`*, ${tables[1]}!inner(*)`)
-      .eq(`${tables[1]}.user_id`,userId);
+      .select(`*, ${tables[1]}(*)`)
+      .eq(`${tables[1]}.user_id`,userId)
     }
     return await this.dbClient.from(tables[0])
-      .select(`*, ${tables[1]}!inner(*)`);
-      
+      .select(`*, ${tables[1]}(*)`);
   }
 
   async get(table: DB_TABLES, userId?: string){
     if (userId){
-      return await this.dbClient.from(table).select('*').match({ userId });  
+      return await this.dbClient.from(table).select('*').match({ user_id: userId });  
     }
     return await this.dbClient.from(table).select('*');
   }
@@ -125,8 +124,8 @@ export class ProviderService {
     return await this.dbClient.from(table).update(item).match({ id });
   }
 
-  async remove(table: DB_TABLES, id: number){
-    return await this.dbClient.from(table).delete().match({ id });
+  async remove(table: DB_TABLES, id: number, prop: string = 'id'){
+    return await this.dbClient.from(table).delete().match({ [prop]: id });
   }
 
   //#endregion
