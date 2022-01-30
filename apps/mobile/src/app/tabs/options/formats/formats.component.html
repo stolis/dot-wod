@@ -1,1 +1,56 @@
-<p>formats works!</p>
+<ion-content>
+    <ion-list-header *ngIf="!editItem">
+        <ion-button (click)="toggleAdd()">
+          <ion-icon name="add"></ion-icon>
+        </ion-button>
+        <ion-button (click)="refresh()">
+          <ion-icon name="refresh"></ion-icon>
+        </ion-button>
+      </ion-list-header>
+    <ion-list>
+    <ion-item-sliding *ngFor="let item of svc.formats; let i = index;">
+        <ion-item *ngIf="item.id === editItem?.id || !editItem">
+            <ion-label color="item.isActive ? 'blue' : 'secondary'">{{ item.name }}
+                <p *ngIf="item.time_direction">Time direction: {{item.time_direction}}</p>
+            </ion-label>
+            <ion-toggle *ngIf="!editItem" slot="end" [value]="item?.isSubscribed" [checked]="item?.isSubscribed" (ionChange)="toggleSubscription(item)"></ion-toggle>
+        </ion-item>
+        <ion-item-options *ngIf="item.user_id === api.user?.id" side="end">
+            <ion-item-option (click)="deleteWithWarning(item)" color="danger">
+                <ion-icon name="trash" slot="icon-only"></ion-icon>
+            </ion-item-option>
+        </ion-item-options>
+        <ion-item-options side="start">
+            <ion-item-option *ngIf="!editItem && item.id" (click)="toggleEdit(item, i)" color="warning">
+                <ion-icon name="create" slot="icon-only"></ion-icon>
+            </ion-item-option>
+            <ion-item-option *ngIf="item.id === editItem?.id" (click)="applyEdit(i)">
+                <ion-icon name="checkmark-outline" slot="icon-only"></ion-icon>
+            </ion-item-option>
+            <ion-item-option *ngIf="item.id === editItem?.id" (click)="cancelEdit(i)" color="secondary">
+                <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+            </ion-item-option>
+        </ion-item-options>
+    </ion-item-sliding>
+    <form *ngIf="editItem as IFormat" #formatForm>
+        <ion-grid>
+          <ion-row color="primary">
+            <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
+                <div padding>
+                  <ion-item>
+                    <ion-label position="floating">Name</ion-label>
+                    <ion-input name="format_name" required [disabled]="editItem.user_id !== api.user?.id" [(ngModel)]="editItem.name"></ion-input>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">Time Direction</ion-label>
+                    <ion-select [value]="editItem.time_direction" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setTimeDirection($event)" [compareWith]="compareWith">
+                        <ion-select-option *ngFor="let item of timeDirections" [value]="item">{{item}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </div>
+              </ion-col>
+          </ion-row>
+        </ion-grid>
+      </form>   
+    </ion-list>
+</ion-content>

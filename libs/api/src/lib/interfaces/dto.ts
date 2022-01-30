@@ -1,5 +1,5 @@
 import { BehaviorSubject } from "rxjs";
-import { DB_TABLES, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS } from "../types/ui";
+import { DB_TABLES, DOTWOD_ALERT, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS, DOTWOD_TIMEDIRECTION } from "../types/ui";
 import { toDTO } from '../functions/helpers';
 
 export interface IRow {
@@ -15,6 +15,10 @@ export interface IRow {
 }
 
 //#region Main Entities
+
+export interface IFormat extends IRow {
+  time_direction?: DOTWOD_TIMEDIRECTION;
+}
 
 export interface ISchedule extends IRow {
   program?: Array<IProgram>;
@@ -40,6 +44,12 @@ export interface IEquipment extends IRow {
 export interface IProgram {
   day?: number;
   exerciseType?: Array<IExerciseType>;
+}
+
+export interface IAlert {
+  type?: DOTWOD_ALERT;
+  interval?: number;
+  duration?: number;
 }
 
 export interface IExerciseType {

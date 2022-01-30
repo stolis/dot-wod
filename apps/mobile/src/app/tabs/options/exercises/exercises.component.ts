@@ -89,14 +89,6 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
     this.editItem!.exercise_equipment_map[0].equipment = event.detail.value as Array<IEquipment>;
   }
 
-  compareWith(f1: any, f2: any) {
-    if (Array.isArray(f2)) {
-      if (!f1) {
-        return false;
-      }
-      return f2.find(val => val === f1);
-    }
-    return f1 === f2;
-  };
+  
 
 }

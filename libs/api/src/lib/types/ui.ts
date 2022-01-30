@@ -7,6 +7,20 @@ export const DOTWOD_CATEGORIES = {
 
 export type DOTWOD_CATEGORIES = typeof DOTWOD_CATEGORIES[keyof typeof DOTWOD_CATEGORIES];
 
+export const DOTWOD_TIMEDIRECTION = {
+    STOPWATCH: 'Stopwatch',
+    TIMER: 'Timer'
+} as const
+
+export type DOTWOD_TIMEDIRECTION = typeof DOTWOD_TIMEDIRECTION[keyof typeof DOTWOD_TIMEDIRECTION];
+
+export const DOTWOD_ALERT = {
+    WORK: 'Work',
+    REST: 'Rest'
+}
+
+export type DOTWOD_ALERT = typeof DOTWOD_ALERT[keyof typeof DOTWOD_ALERT];
+
 export const DOTWOD_EXERCISETYPES = {
     E: 'Empty',
     M: 'Cardio',
@@ -18,6 +32,7 @@ export type DOTWOD_EXERCISETYPES = typeof DOTWOD_EXERCISETYPES[keyof typeof DOTW
 
 export const DB_TABLES = {
     SCHEDULES: 'schedule',
+    FORMATS: 'format',
     EXERCISES: 'exercise',
     EQUIPMENT: 'equipment',
     EQUIP4EXR: 'exercise_equipment_map'
