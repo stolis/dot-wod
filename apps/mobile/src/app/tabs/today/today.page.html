@@ -1,48 +1,104 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-chip color="primary">
-      <ion-title> Today </ion-title>
-    </ion-chip>
-    <ion-chip outline color="primary"> 10/10/2021 </ion-chip>
-    <ion-chip outline color="primary">
-      <ion-label>W</ion-label>
+    <ion-title slot="start" size="medium" class="left">
+      Today <span class="subtitle">({{today | date : 'MMM d, y'}})</span>
+    </ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-chip outline color="primary" *ngFor="let todaysType of todaysTypes">
+      <ion-label>{{todaysType.type}}</ion-label>
     </ion-chip>
   </ion-toolbar>
 </ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Today</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-grid *ngFor="let wod of wods">
-    <ion-row>
-      <ion-col col-12>
-        <ion-chip>
-          <ion-label>{{'#' + wod.id}}</ion-label>
-        </ion-chip>
-        <ion-chip>
-          <ion-label>{{wod.format}}</ion-label>
-        </ion-chip>
-        <ion-chip>
-          <ion-label>{{'TC: ' + wod.timecap + "'"}}</ion-label>
-        </ion-chip>
-        <ion-chip>
-          <ion-label>{{wod.rounds + ' Rounds'}}</ion-label>
-        </ion-chip>
-      </ion-col>
-    </ion-row>
-    <ion-row class="grid-header">
-      <ion-col color="primary" col-6>Exercise</ion-col>
-      <ion-col col-3>Reps</ion-col>
-      <ion-col col-3>Equipment</ion-col>
-    </ion-row>
-    <ion-row *ngFor="let exercise of wod.exercises">
-      <ion-col col-6>{{exercise.name}}</ion-col>
-      <ion-col col-3>{{exercise.reps}}</ion-col>
-      <ion-col col-3>{{exercise.equipment}}</ion-col>
-    </ion-row>
-  </ion-grid>
+  <ion-list-header>
+    <ion-button *ngIf="!editItem && !editExercise" (click)="toggleAdd()">
+      <ion-icon name="add"></ion-icon>
+    </ion-button>
+    <ion-button *ngIf="!editItem && !editExercise" (click)="shuffle()">
+      <ion-icon name="code-working-outline"></ion-icon>
+    </ion-button>
+    <ion-button *ngIf="editItem" (click)="!editExercise ? applyEdit() : applyEditExercise()">
+      <ion-icon name="checkmark-outline"></ion-icon>
+    </ion-button>
+    <ion-button *ngIf="editItem" (click)="!editExercise ? cancelEdit() : cancelEditExercise()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+  </ion-list-header>
+  <ion-list>
+    <ion-item-sliding #wodsSlide *ngFor="let item of svc.wods; let i = index;">
+      <ion-item *ngIf="!editItem && !editExercise">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="2" class="ion-align-self-center" col-1>
+              <ion-label>#{{item.id}}</ion-label>
+            </ion-col>
+            <ion-col class="ion-align-self-center" col-1>
+              <ion-label>{{(formats | filterBy:'id':item.formatId)[0]?.name}} <span class="timecap" *ngIf="item.timecap">{{item.timecap + "'"}}</span></ion-label>
+              <ion-label color="medium" size="small" *ngIf="item.rounds">{{item.rounds ? item.rounds + ' Rounds' : ''}}</ion-label>
+            </ion-col>
+            <ion-col class="ion-justify-self-center ion-align-self-center" col-4>
+              <ion-button (click)="toggleExerciseAdd(item)">add exercise</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item-options *ngIf="item.user_id === api.user?.id" side="end">
+        <ion-item-option (click)="deleteWithWarning(item)" color="danger">
+          <ion-icon name="trash" slot="icon-only"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+      <ion-item-options side="start">
+        <ion-item-option *ngIf="!editItem && item.id" (click)="toggleEdit(item)" color="warning">
+          <ion-icon name="create" slot="icon-only"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+    <form *ngIf="editItem && !editExercise as IWod" #wodForm>
+      <ion-grid>
+        <ion-row color="primary">
+          <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
+              <div padding>
+                <ion-item>
+                  <ion-label position="floating">Name</ion-label>
+                  <ion-input name="exercise_name" required [disabled]="editItem.user_id !== api.user?.id" [(ngModel)]="editItem.name"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Format</ion-label>
+                  <ion-select [value]="editItem.formatId" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setFormat($event)" [compareWith]="compareWith">
+                      <ion-select-option *ngFor="let format of formats" [value]="format.id">{{format.name}}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Timecap (min)</ion-label>
+                  <ion-input name="timecap" type="numeric" [(ngModel)]="editItem.timecap"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Rounds</ion-label>
+                  <ion-input name="timecap" type="numeric" [(ngModel)]="editItem.rounds"></ion-input>
+                </ion-item>
+              </div>
+            </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+    <form *ngIf="editExercise" #exerciseForm>
+      <ion-grid>
+        <ion-row class="grid-header">
+          <ion-col class="ion-align-self-center" color="primary" col-6>
+            <ion-button>
+              <ion-icon name="add" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col class="ion-align-self-center" col-3>Reps</ion-col>
+          <ion-col class="ion-align-self-center" col-3>Equipment</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-6>{{editExercise.exerciseId}}</ion-col>
+          <ion-col col-3>{{editExercise.goal}}</ion-col>
+          <ion-col col-3>{{editExercise.equipmentId}}</ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+  </ion-list>
 </ion-content>

@@ -19,18 +19,21 @@ export class OptionsDirective {
   toggleAdd(){
     this.svc.collection = [...this.svc.collection, { user_id: this.api.user.id, toDTO: toDTO }];
     this.editItem = this.svc.collection[this.svc.collection.length - 1];
-    const self = this;
-    setTimeout(() => { self.slides.last.open('start'); }, 1000);
+    /* const self = this;
+    setTimeout(() => { 
+      console.log(self.slides);
+      self.slides.last.open('start'); 
+    }, 2000); */
   }
 
-  toggleEdit(item: IRow, index: number) {
+  toggleEdit(item: IRow) {
     this.editItem = item;
-    const slide = this.slides.get(index) as IonItemSliding;
-    slide.close();
-    slide.open('start');
+    //const slide = this.slides.get(index) as IonItemSliding;
+    //slide.close();
+    //slide.open('start');
   }
 
-  applyEdit(index: number) {
+  applyEdit() {
     if (this.editItem){
       if (this.editItem.id && this.editItem.id > 0){
         this.svc.update(this.editItem);
@@ -40,17 +43,18 @@ export class OptionsDirective {
       }
     }
     this.editItem = undefined;
-    const slide = this.slides.get(index) as IonItemSliding;
-    slide.close();
+    //this.slides.forEach(item => item.closeOpened());
+    //slide.close();
   }
 
-  cancelEdit(index: number) {
+  cancelEdit() {
     if (!this.editItem?.id){
       this.svc.collection = this.svc.collection.filter( item => item.id );
     }
     this.editItem = undefined;
-    const slide = this.slides.get(index) as IonItemSliding;
-    slide.close();
+    //this.slides.forEach(item => item.closeOpened());
+    //const slide = this.slides.get(index) as IonItemSliding;
+    //slide.close();
   }
 
   toggleSubscription(item: IRow) {

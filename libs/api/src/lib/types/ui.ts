@@ -30,8 +30,28 @@ export const DOTWOD_EXERCISETYPES = {
 
 export type DOTWOD_EXERCISETYPES = typeof DOTWOD_EXERCISETYPES[keyof typeof DOTWOD_EXERCISETYPES];
 
+export const DOTWOD_EXERCISEGAUGE = {
+    REPS: 'Repetitions',
+    METERS: 'Meters',
+    SECONDS: 'Seconds'
+} as const;
+
+export type DOTWOD_EXERCISEGAUGE = typeof DOTWOD_EXERCISEGAUGE[keyof typeof DOTWOD_EXERCISEGAUGE];
+
+export const DOTWOD_EXERCISEROLE = {
+    COUNT: 'Count',
+    BUYIN: 'Buy in',
+    BUYOUT: 'Buy out',
+    COOP: 'Co-op',
+    INTERVAL: 'Interval',
+    PENALTY: 'Penalty'
+} as const;
+
+export type DOTWOD_EXERCISEROLE = typeof DOTWOD_EXERCISEROLE[keyof typeof DOTWOD_EXERCISEROLE];
+
 export const DB_TABLES = {
     SCHEDULES: 'schedule',
+    WODS: 'wod',
     FORMATS: 'format',
     EXERCISES: 'exercise',
     EQUIPMENT: 'equipment',

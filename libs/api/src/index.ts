@@ -7,3 +7,4 @@ export * from './lib/interfaces/dto';
 export * from './lib/functions/helpers';
 export * from './lib/types/ui';
 export * from './lib/pipes/filter-by.pipe';
+export * from './lib/decorators/destroy.decorator';

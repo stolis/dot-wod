@@ -1,37 +1,79 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { DOTWOD_EXERCISETYPES, IExerciseType, ISchedule, IWod, ScheduleService, FormatService, TakeUntilDestroy, IFormat, BaseServiceClass, ProviderService, WodService, IWodExercise } from '@dot-wod/api';
+import { AlertController, IonItemSliding } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { OptionsDirective } from '../options/options.directive';
 
 @Component({
   selector: 'dot-wod-today',
   templateUrl: 'today.page.html',
   styleUrls: ['today.page.scss'],
 })
-export class TodayPage {
-  wods = [
-    {
-      id: 171,
-      format: 'For Time',
-      timecap: 15,
-      rounds: 5,
-      exercises: [
-        {
-          name: 'Hang Clean & Jerk',
-          reps: '100',
-          equipment: '2 x Dumbbell (15kg)',
-        },
-        { name: 'Ring Rows', reps: '7 (penalty)', equipment: '2 x Rings' },
-      ],
-    },
-    {
-      id: 172,
-      format: 'Amrap',
-      timecap: 15,
-      rounds: null,
-      exercises: [
-        { name: 'Ring Row', reps: '12', equipment: '2 x Rings' },
-        { name: 'Air Squat', reps: '12', equipment: null },
-        { name: 'Diamond Push Up', reps: '12', equipment: null },
-      ],
-    },
-  ];
-  constructor() {}
+@TakeUntilDestroy
+export class TodayPage extends OptionsDirective implements OnInit, OnDestroy {
+  @ViewChildren(IonItemSliding) slides!: QueryList<IonItemSliding>;
+  editItem: IWod | undefined;
+  editExercise?: IWodExercise; 
+  today: Date = new Date();
+  todaysTypes!: Array<IExerciseType>;
+  wods!: Array<IWod>;
+  formats!: Array<IFormat>;
+
+  private componentDestroy!: () => Observable<unknown>;
+  
+  constructor(
+    public svc: WodService,
+    public api: ProviderService,
+    public alert: AlertController,
+    public scheduleSvc: ScheduleService, 
+    public formatSvc : FormatService
+  ) {
+    super(svc,api,alert);
+     this.scheduleSvc._collection
+     .pipe(takeUntil(this.componentDestroy()))
+     .subscribe({
+        next: (schedules: unknown) => {
+          const schedule = (schedules as Array<ISchedule>)[0];
+          if (schedule){
+            const program = schedule.program?.filter( pr => pr.day === schedule.day)[0];
+            this.todaysTypes = program?.exerciseType!.filter( type => type.type !== DOTWOD_EXERCISETYPES.E)!;
+          }
+        }
+      });
+
+      this.formatSvc._collection
+      .pipe(takeUntil(this.componentDestroy()))
+      .subscribe({
+        next: (formats: unknown) => {
+          this.formats = formats as  Array<IFormat>;
+        }
+      })
+  }
+
+  ngOnInit(): void { }
+
+  setFormat(event: any) {
+    this.editItem!.formatId = event.detail.value as number;
+  }
+
+  shuffle(): void {}
+
+  toggleExerciseAdd(item: IWod) {
+    this.editItem = item;
+    this.editExercise = { };
+  }
+
+  applyEditExercise() {
+    console.log('apply ex');
+  }
+
+  cancelEditExercise() {
+    this.editItem = this.editExercise = undefined;
+    console.log('cancel ex');
+  }
+
+  ngOnDestroy(): void { }
 }
+
+

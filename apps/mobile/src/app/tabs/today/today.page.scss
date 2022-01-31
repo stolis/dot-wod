@@ -2,3 +2,20 @@
   border-bottom: 1px Solid rgba(255, 255, 255, 0.12);
   font-size: smaller;
 }
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.timecap {
+  color: var(--ion-color-secondary);
+}
+
+.subtitle {
+  font-size: smaller;
+  color: var(--ion-color-medium);
+}

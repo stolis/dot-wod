@@ -1,5 +1,5 @@
 import { BehaviorSubject } from "rxjs";
-import { DB_TABLES, DOTWOD_ALERT, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS, DOTWOD_TIMEDIRECTION } from "../types/ui";
+import { DB_TABLES, DOTWOD_ALERT, DOTWOD_EXERCISEGAUGE, DOTWOD_EXERCISEROLE, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS, DOTWOD_TIMEDIRECTION } from "../types/ui";
 import { toDTO } from '../functions/helpers';
 
 export interface IRow {
@@ -15,9 +15,14 @@ export interface IRow {
 }
 
 //#region Main Entities
-
-export interface IFormat extends IRow {
-  time_direction?: DOTWOD_TIMEDIRECTION;
+export interface IWod extends IRow {
+  schedule?: Array<DOTWOD_EXERCISETYPES>;
+  formatId?: number;
+  timecap?: number;
+  rounds?: number;
+  exercises?: Array<IWodExercise>;
+  started_at?: Date;
+  finished_at?: Date;
 }
 
 export interface ISchedule extends IRow {
@@ -26,9 +31,14 @@ export interface ISchedule extends IRow {
   day?: number;
 }
 
+export interface IFormat extends IRow {
+  time_direction?: DOTWOD_TIMEDIRECTION;
+}
+
 export interface IExercise extends IRow {
   type: Array<DOTWOD_EXERCISETYPES>;
   musclegroups: Array<DOTWOD_MUSCLEGROUPS>;
+  gauge: DOTWOD_EXERCISEGAUGE;
   exercise_equipment_map: Array<IExerciseEquipment>;
 }
 
@@ -40,6 +50,15 @@ export interface IEquipment extends IRow {
 //#endregion
 
 //#region Child Entities
+
+export interface IWodExercise {
+  exerciseId?: number;
+  role?: DOTWOD_EXERCISEROLE;
+  goal?: number;
+  achieved?: number;
+  equipmentId?: number;
+  equipmentQty?: number;
+}
 
 export interface IProgram {
   day?: number;

@@ -1,18 +1,25 @@
 <ion-content>
-    <ion-list-header *ngIf="!editItem">
-      <ion-button (click)="toggleAdd()">
+    <ion-list-header>
+      <ion-button *ngIf="!editItem" (click)="toggleAdd()">
         <ion-icon name="add"></ion-icon>
       </ion-button>
-      <ion-button (click)="refresh()">
+      <ion-button *ngIf="!editItem" (click)="refresh()">
         <ion-icon name="refresh"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="editItem" (click)="applyEdit()">
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="editItem" (click)="cancelEdit()">
+        <ion-icon name="close-outline"></ion-icon>
       </ion-button>
     </ion-list-header>
     <ion-list>
       <ion-item-sliding #schedulesSlide *ngFor="let item of svc.exercises; let i = index;">
-        <ion-item *ngIf="item.id === editItem?.id || !editItem">
+        <ion-item *ngIf="!editItem">
           <ion-label color="item.isActive ? 'blue' : 'secondary'">{{ item.name }}
             <p *ngIf="item.type">Type: {{item.type}}</p>
             <p *ngIf="item.musclegroups">Muscle groups: {{item.musclegroups.join(',')}}</p>
+            <p *ngIf="item.gauge">Counts: {{item.gauge}}</p>
             <p *ngIf="item.exercise_equipment_map[0].equipment"> 
               <ion-chip *ngFor="let item of equipSvc.equipment | filterBy: 'id' : item.exercise_equipment_map[0].equipment">
                 {{item.name}} {{item.weight ? '(' + item.weight + ' kgr)' : ''}} {{item.height ? '(' + item.height + ' cm)' : ''}}
@@ -27,14 +34,8 @@
           </ion-item-option>
         </ion-item-options>
         <ion-item-options side="start">
-          <ion-item-option *ngIf="!editItem && item.id" (click)="toggleEdit(item, i)" color="warning">
+          <ion-item-option *ngIf="!editItem && item.id" (click)="toggleEdit(item)" color="warning">
             <ion-icon name="create" slot="icon-only"></ion-icon>
-          </ion-item-option>
-          <ion-item-option *ngIf="item.id === editItem?.id" (click)="applyEdit(i)">
-            <ion-icon name="checkmark-outline" slot="icon-only"></ion-icon>
-          </ion-item-option>
-          <ion-item-option *ngIf="item.id === editItem?.id" (click)="cancelEdit(i)" color="secondary">
-            <ion-icon name="close-outline" slot="icon-only"></ion-icon>
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
@@ -54,9 +55,15 @@
                     </ion-select>
                   </ion-item>
                   <ion-item>
-                      <ion-label position="floating">Muscle Groups</ion-label>
-                      <ion-select [value]="editItem.musclegroups" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setMuscleGroup($event)" multiple="true" [compareWith]="compareWith">
-                        <ion-select-option *ngFor="let muscle of muscleGroups" [value]="muscle">{{muscle}}</ion-select-option>
+                    <ion-label position="floating">Muscle Groups</ion-label>
+                    <ion-select [value]="editItem.musclegroups" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setMuscleGroup($event)" multiple="true" [compareWith]="compareWith">
+                      <ion-select-option *ngFor="let muscle of muscleGroups" [value]="muscle">{{muscle}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">Gauge</ion-label>
+                    <ion-select [value]="editItem.gauge" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setGauge($event)" [compareWith]="compareWith">
+                      <ion-select-option *ngFor="let gauge of gauges" [value]="gauge">{{gauge}}</ion-select-option>
                     </ion-select>
                   </ion-item>
                   <ion-item>

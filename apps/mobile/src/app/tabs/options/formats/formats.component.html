@@ -1,10 +1,16 @@
 <ion-content>
-    <ion-list-header *ngIf="!editItem">
-        <ion-button (click)="toggleAdd()">
+    <ion-list-header>
+        <ion-button *ngIf="!editItem" (click)="toggleAdd()">
           <ion-icon name="add"></ion-icon>
         </ion-button>
-        <ion-button (click)="refresh()">
+        <ion-button *ngIf="!editItem" (click)="refresh()">
           <ion-icon name="refresh"></ion-icon>
+        </ion-button>
+        <ion-button *ngIf="editItem" (click)="applyEdit()">
+          <ion-icon name="checkmark-outline"></ion-icon>
+        </ion-button>
+        <ion-button *ngIf="editItem" (click)="cancelEdit()">
+          <ion-icon name="close-outline"></ion-icon>
         </ion-button>
       </ion-list-header>
     <ion-list>
@@ -21,14 +27,8 @@
             </ion-item-option>
         </ion-item-options>
         <ion-item-options side="start">
-            <ion-item-option *ngIf="!editItem && item.id" (click)="toggleEdit(item, i)" color="warning">
+            <ion-item-option *ngIf="!editItem && item.id" (click)="toggleEdit(item)" color="warning">
                 <ion-icon name="create" slot="icon-only"></ion-icon>
-            </ion-item-option>
-            <ion-item-option *ngIf="item.id === editItem?.id" (click)="applyEdit(i)">
-                <ion-icon name="checkmark-outline" slot="icon-only"></ion-icon>
-            </ion-item-option>
-            <ion-item-option *ngIf="item.id === editItem?.id" (click)="cancelEdit(i)" color="secondary">
-                <ion-icon name="close-outline" slot="icon-only"></ion-icon>
             </ion-item-option>
         </ion-item-options>
     </ion-item-sliding>

@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ProviderService, ExerciseService, IRow, IExercise, IExerciseType, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS, EquipmentService, IEquipment, toDTO, DB_TABLES } from '@dot-wod/api';
+import { ProviderService, ExerciseService, IExercise, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS, EquipmentService, IEquipment, toDTO, DOTWOD_EXERCISEGAUGE } from '@dot-wod/api';
 import { AlertController, IonItemSliding } from '@ionic/angular';
 import { OptionsDirective } from '../options.directive';
 
@@ -14,7 +14,7 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
   equipment!: Array<IEquipment>;
   exerciseTypes = Object.values(DOTWOD_EXERCISETYPES);
   muscleGroups = Object.values(DOTWOD_MUSCLEGROUPS);
-  
+  gauges = Object.values(DOTWOD_EXERCISEGAUGE);
   
   constructor(public svc: ExerciseService, public api: ProviderService, public alert: AlertController, public equipSvc: EquipmentService) { 
     super(svc,api,alert);
@@ -26,11 +26,11 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
     const newExercise = { user_id: this.api.user.id, exercise_equipment_map: [{ user_id: this.api.user.id, equipment: [] }], toDTO: toDTO };
     this.svc.collection = [...this.svc.collection, newExercise];
     this.editItem = this.svc.collection[this.svc.collection.length - 1] as IExercise;
-    const self = this;
-    setTimeout(() => { self.slides.last.open('start'); }, 1000);
+    /* const self = this;
+    setTimeout(() => { self.slides.last.open('start'); }, 1000); */
   }
 
-  override applyEdit(index: number) {
+  override applyEdit() {
     if (this.editItem){
       if (this.editItem.id && this.editItem.id > 0){
         this.svc.updateMultiple([this.editItem, this.editItem.exercise_equipment_map[0]]);
@@ -41,8 +41,8 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
       }
     }
     this.editItem = undefined;
-    const slide = this.slides.get(index) as IonItemSliding;
-    slide.close();
+    //const slide = this.slides.get(index) as IonItemSliding;
+    //slide.close();
   }
 
   override refresh() {
@@ -83,6 +83,10 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
 
   setMuscleGroup(event: any) {
     this.editItem!.musclegroups = event.detail.value as Array<DOTWOD_MUSCLEGROUPS>;
+  }
+
+  setGauge(event: any) {
+    this.editItem!.gauge = event.detail.value as DOTWOD_EXERCISEGAUGE;
   }
 
   setEquipment(event: any) {
