@@ -80,7 +80,7 @@ export interface IExerciseEquipment {
   id?: number;
   user_id?: string;
   exerciseId?: number;
-  equipment?: Array<IEquipment>;
+  equipment?: Array<number>;
 }
 
 //#endregion

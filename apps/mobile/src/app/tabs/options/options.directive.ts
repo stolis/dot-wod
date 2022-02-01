@@ -19,18 +19,10 @@ export class OptionsDirective {
   toggleAdd(){
     this.svc.collection = [...this.svc.collection, { user_id: this.api.user.id, toDTO: toDTO }];
     this.editItem = this.svc.collection[this.svc.collection.length - 1];
-    /* const self = this;
-    setTimeout(() => { 
-      console.log(self.slides);
-      self.slides.last.open('start'); 
-    }, 2000); */
   }
 
   toggleEdit(item: IRow) {
     this.editItem = item;
-    //const slide = this.slides.get(index) as IonItemSliding;
-    //slide.close();
-    //slide.open('start');
   }
 
   applyEdit() {
@@ -43,8 +35,7 @@ export class OptionsDirective {
       }
     }
     this.editItem = undefined;
-    //this.slides.forEach(item => item.closeOpened());
-    //slide.close();
+    this.slides.forEach(item => item.closeOpened());
   }
 
   cancelEdit() {
@@ -52,9 +43,7 @@ export class OptionsDirective {
       this.svc.collection = this.svc.collection.filter( item => item.id );
     }
     this.editItem = undefined;
-    //this.slides.forEach(item => item.closeOpened());
-    //const slide = this.slides.get(index) as IonItemSliding;
-    //slide.close();
+    this.slides.forEach(item => item.closeOpened());
   }
 
   toggleSubscription(item: IRow) {

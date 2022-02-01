@@ -90,7 +90,8 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
   }
 
   setEquipment(event: any) {
-    this.editItem!.exercise_equipment_map[0].equipment = event.detail.value as Array<IEquipment>;
+
+    this.editItem!.exercise_equipment_map[0].equipment = event.detail.value as Array<number>;
   }
 
   

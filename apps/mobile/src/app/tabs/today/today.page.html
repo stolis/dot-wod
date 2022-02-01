@@ -18,6 +18,12 @@
     <ion-button *ngIf="!editItem && !editExercise" (click)="shuffle()">
       <ion-icon name="code-working-outline"></ion-icon>
     </ion-button>
+    <ion-button *ngIf="!editItem && !editExercise" (click)="invite()">
+      <ion-icon name="person-add-outline"></ion-icon>
+    </ion-button>
+    <ion-button *ngIf="!editItem && !editExercise" (click)="start()">
+      <ion-icon name="stopwatch-outline"></ion-icon>
+    </ion-button>
     <ion-button *ngIf="editItem" (click)="!editExercise ? applyEdit() : applyEditExercise()">
       <ion-icon name="checkmark-outline"></ion-icon>
     </ion-button>
@@ -39,6 +45,20 @@
             </ion-col>
             <ion-col class="ion-justify-self-center ion-align-self-center" col-4>
               <ion-button (click)="toggleExerciseAdd(item)">add exercise</ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngFor="let ex of item.exercises" (click)="toggleExerciseEdit(item,ex)">
+            <ion-col size="1" class="ion-align-self-center" col-1>
+              <ion-label class="small-label justify-right">{{ex.goal}}</ion-label>
+            </ion-col>
+            <ion-col class="ion-align-self-center" col-2>
+              <ion-label class="small-label">{{(exercises | filterBy:'id':ex.exerciseId)[0]?.name}}</ion-label>
+            </ion-col>
+            <ion-col class="ion-align-self-center" col-3>
+              <ion-chip class="small-label" color="warning" *ngIf="ex.role !== 'Count'">{{ex.role}}</ion-chip>
+              <ion-chip class="small-label" *ngIf="(equipment | filterBy:'id':ex.equipmentId)[0] as eq">
+                {{eq.name}} {{eq.weight ? ' ' + eq.weight + 'k' : ''}} {{eq.height ? '(' + eq.height + ' cm)' : ''}}
+              </ion-chip>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -82,23 +102,40 @@
         </ion-row>
       </ion-grid>
     </form>
-    <form *ngIf="editExercise" #exerciseForm>
+    <form *ngIf="editItem && editExercise as IWodExercise" #exerciseForm>
       <ion-grid>
-        <ion-row class="grid-header">
-          <ion-col class="ion-align-self-center" color="primary" col-6>
-            <ion-button>
-              <ion-icon name="add" slot="icon-only"></ion-icon>
-            </ion-button>
-          </ion-col>
-          <ion-col class="ion-align-self-center" col-3>Reps</ion-col>
-          <ion-col class="ion-align-self-center" col-3>Equipment</ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col col-6>{{editExercise.exerciseId}}</ion-col>
-          <ion-col col-3>{{editExercise.goal}}</ion-col>
-          <ion-col col-3>{{editExercise.equipmentId}}</ion-col>
+        <ion-row color="primary">
+          <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
+              <div padding>
+                <ion-item>
+                  <ion-label position="floating">Exercise</ion-label>
+                  <ion-select [value]="editExercise.exerciseId" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setExercise($event)" [compareWith]="compareWith">
+                      <ion-select-option *ngFor="let exercise of exercises" [value]="exercise.id">{{exercise.name}}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Role</ion-label>
+                  <ion-select [value]="editExercise.role" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setRole($event)" [compareWith]="compareWith">
+                    <ion-select-option *ngFor="let role of roles" [value]="role">{{role}}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Goal (reps/meters/secs)</ion-label>
+                  <ion-input name="timecap" type="numeric" [(ngModel)]="editExercise.goal"></ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Equipment</ion-label>
+                  <ion-select [value]="editExercise.equipmentId" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setEquipment($event)" [compareWith]="compareWith">
+                      <ion-select-option *ngFor="let item of exerciseEquipment" [value]="item.id">
+                        {{item.name}} {{item.weight ? '(' + item.weight + ' kgr)' : ''}} {{item.height ? '(' + item.height + ' cm)' : ''}}
+                      </ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </div>
+            </ion-col>
         </ion-row>
       </ion-grid>
+      
     </form>
   </ion-list>
 </ion-content>
