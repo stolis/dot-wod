@@ -8,7 +8,7 @@ import { DOTWOD_CATEGORIES, EquipmentService, ScheduleService } from '@dot-wod/a
 })
 export class OptionsPage implements OnInit {
   categories = DOTWOD_CATEGORIES;
-  viewingCategory: DOTWOD_CATEGORIES = DOTWOD_CATEGORIES.EXERCISES;
+  viewingCategory: DOTWOD_CATEGORIES = DOTWOD_CATEGORIES.SCHEDULES;
   
   constructor() {}
 

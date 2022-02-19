@@ -13,6 +13,12 @@ export function toDTO(item: any, properties: Array<string>) {
     return item; 
 }
 
+export function dateDiff(a: Date, b: Date) {
+  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate(), a.getHours(), a.getMinutes(), a.getSeconds());
+  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate(), b.getHours(), b.getMinutes(), b.getSeconds());
+  return Math.floor(utc2 - utc1);
+}
+
 type IsOptional<T> = Extract<T, undefined> extends never ? false : true
 export type Func = (...args: any[]) => any
 type IsFunction<T> = T extends Func ? true : false

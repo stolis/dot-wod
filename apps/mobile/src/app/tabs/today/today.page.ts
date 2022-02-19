@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DOTWOD_EXERCISETYPES, IExerciseType, ISchedule, IWod, ScheduleService, FormatService, TakeUntilDestroy, IFormat, ProviderService, WodService, IWodExercise, IExercise, ExerciseService, DOTWOD_EXERCISEROLE, IEquipment, EquipmentService } from '@dot-wod/api';
+import { Router } from '@angular/router';
+import { DOTWOD_EXERCISETYPES, IExerciseType, ISchedule, IWod, ScheduleService, FormatService, TakeUntilDestroy, IFormat, ProviderService, WodService, IWodExercise, IExercise, ExerciseService, DOTWOD_EXERCISEROLE, IEquipment, EquipmentService, IRow } from '@dot-wod/api';
 import { AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -33,44 +34,45 @@ export class TodayPage extends OptionsDirective implements OnInit, OnDestroy {
     public scheduleSvc: ScheduleService, 
     public formatSvc : FormatService,
     public exerciseSvc: ExerciseService,
-    public equipSvc: EquipmentService
+    public equipSvc: EquipmentService,
+    private router: Router
   ) {
     super(svc,api,alert);
-     this.scheduleSvc._collection
-     .pipe(takeUntil(this.componentDestroy()))
-     .subscribe({
-        next: (schedules: unknown) => {
-          const schedule = (schedules as Array<ISchedule>)[0];
-          if (schedule){
-            const program = schedule.program?.filter( pr => pr.day === schedule.day)[0];
-            this.todaysTypes = program?.exerciseType!.filter( type => type.type !== DOTWOD_EXERCISETYPES.E)!;
-          }
+    this.scheduleSvc._collection
+    .pipe(takeUntil(this.componentDestroy()))
+    .subscribe({
+      next: (schedules: unknown) => {
+        const schedule = (schedules as Array<ISchedule>)[0];
+        if (schedule){
+          const program = schedule.program?.filter( pr => pr.day === schedule.day)[0];
+          this.todaysTypes = program?.exerciseType!.filter( type => type.type !== DOTWOD_EXERCISETYPES.E)!;
         }
-      });
+      }
+    });
 
-      this.formatSvc._collection
-      .pipe(takeUntil(this.componentDestroy()))
-      .subscribe({
-        next: (formats: unknown) => {
-          this.formats = formats as Array<IFormat>;
-        }
-      });
+    this.formatSvc._collection
+    .pipe(takeUntil(this.componentDestroy()))
+    .subscribe({
+      next: (formats: unknown) => {
+        this.formats = formats as Array<IFormat>;
+      }
+    });
 
-      this.exerciseSvc._collection
-      .pipe(takeUntil(this.componentDestroy()))
-      .subscribe({
-        next: (exercises: unknown) => {
-          this.exercises = exercises as Array<IExercise>;
-        }
-      });
+    this.exerciseSvc._collection
+    .pipe(takeUntil(this.componentDestroy()))
+    .subscribe({
+      next: (exercises: unknown) => {
+        this.exercises = exercises as Array<IExercise>;
+      }
+    });
 
-      this.equipSvc._collection
-      .pipe(takeUntil(this.componentDestroy()))
-      .subscribe({
-        next: (equipment: unknown) => {
-          this.equipment = equipment as Array<IEquipment>;
-        }
-      });
+    this.equipSvc._collection
+    .pipe(takeUntil(this.componentDestroy()))
+    .subscribe({
+      next: (equipment: unknown) => {
+        this.equipment = equipment as Array<IEquipment>;
+      }
+    });
   }
 
   ngOnInit(): void {}
@@ -85,7 +87,19 @@ export class TodayPage extends OptionsDirective implements OnInit, OnDestroy {
 
   invite(): void {}
 
-  start(): void {}
+  save(): void {
+    this.svc.update(this.wods);
+  }
+
+  start(): void {
+    this.router.navigateByUrl('/tabs/now');
+  }
+
+  toggleAdd(): void {
+    super.toggleAdd();
+    const now = new Date();
+    this.editItem!.name = `User on ${now.toDateString()}`;   
+  }
 
   //#endregion
 

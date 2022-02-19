@@ -1,20 +1,26 @@
+<ion-header>
+  <ion-list-header>
+    <ion-button *ngIf="!editItem" (click)="toggleAdd()">
+      <ion-icon name="add"></ion-icon>
+    </ion-button>
+    <ion-button *ngIf="!editItem" (click)="refresh()">
+      <ion-icon name="refresh"></ion-icon>
+    </ion-button>
+    <ion-button *ngIf="editItem" (click)="applyEdit()">
+      <ion-icon name="checkmark-outline"></ion-icon>
+    </ion-button>
+    <ion-button *ngIf="editItem" (click)="cancelEdit()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+    <ion-button *ngIf="!editItem" (click)="toggleOrder()">
+      <ion-icon *ngIf="orderIsAscending" name="caret-up-outline"></ion-icon>
+      <ion-icon *ngIf="!orderIsAscending" name="caret-down-outline"></ion-icon>
+    </ion-button>
+  </ion-list-header>
+</ion-header>
 <ion-content>
-    <ion-list-header>
-      <ion-button *ngIf="!editItem" (click)="toggleAdd()">
-        <ion-icon name="add"></ion-icon>
-      </ion-button>
-      <ion-button *ngIf="!editItem" (click)="refresh()">
-        <ion-icon name="refresh"></ion-icon>
-      </ion-button>
-      <ion-button *ngIf="editItem" (click)="applyEdit()">
-        <ion-icon name="checkmark-outline"></ion-icon>
-      </ion-button>
-      <ion-button *ngIf="editItem" (click)="cancelEdit()">
-        <ion-icon name="close-outline"></ion-icon>
-      </ion-button>
-    </ion-list-header>
     <ion-list>
-      <ion-item-sliding #schedulesSlide *ngFor="let item of svc.exercises; let i = index;">
+      <ion-item-sliding #schedulesSlide *ngFor="let item of uiExercises; let i = index;">
         <ion-item *ngIf="!editItem">
           <ion-label color="item.isActive ? 'blue' : 'secondary'">{{ item.name }}
             <p *ngIf="item.type">Type: {{item.type}}</p>

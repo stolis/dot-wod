@@ -1,3 +1,16 @@
+export const DOTWOD_STATUS = {
+    READY: 'Ready',
+    RUNNING: 'Running',
+    PAUSED: 'Paused',
+    FINISHED: 'Finished',
+    CANCELLED: 'Cancelled',
+    LOGGING: 'Logging',
+    LOGGED: 'Logged',
+    FINISHEDALL: 'Finished All'
+} as const;
+
+export type DOTWOD_STATUS = typeof DOTWOD_STATUS[keyof typeof DOTWOD_STATUS];
+
 export const DOTWOD_CATEGORIES = {
     SCHEDULES: 'Schedules',
     FORMATS: 'Formats',
@@ -6,6 +19,14 @@ export const DOTWOD_CATEGORIES = {
 } as const;
 
 export type DOTWOD_CATEGORIES = typeof DOTWOD_CATEGORIES[keyof typeof DOTWOD_CATEGORIES];
+
+export const DOTWOD_HISTORY = {
+    WEEK: 'Week',
+    MONTH: 'Month',
+    IMPORT: 'Import'
+}
+
+export type DOTWOD_HISTORY = typeof DOTWOD_HISTORY[keyof typeof DOTWOD_HISTORY];
 
 export const DOTWOD_TIMEDIRECTION = {
     STOPWATCH: 'Stopwatch',
@@ -55,7 +76,8 @@ export const DB_TABLES = {
     FORMATS: 'format',
     EXERCISES: 'exercise',
     EQUIPMENT: 'equipment',
-    EQUIP4EXR: 'exercise_equipment_map'
+    EQUIP4EXR: 'exercise_equipment_map',
+    HISTORY: 'wod_history'
 } as const;
 
 export type DB_TABLES = typeof DB_TABLES[keyof typeof DB_TABLES];
@@ -75,6 +97,14 @@ export const DOTWOD_MUSCLEGROUPS = {
     HAMS: 'Hamstrings',
     QUADS: 'Quadriceps',
     CALVS: 'Calves'
-}
+} as const;
 
 export type DOTWOD_MUSCLEGROUPS = typeof DOTWOD_MUSCLEGROUPS[keyof typeof DOTWOD_MUSCLEGROUPS];
+
+export const DOTWOD_LOGBY = {
+    GAUGE: 'Gauge',
+    ROUNDS: 'Rounds',
+    YESNO: 'Yes/No'
+} as const;
+
+export type DOTWOD_LOGBY = typeof DOTWOD_LOGBY[keyof typeof DOTWOD_LOGBY];

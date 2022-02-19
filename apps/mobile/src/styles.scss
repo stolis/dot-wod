@@ -24,3 +24,58 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
+
+
+.justifyRight {
+    text-align: right;
+}
+
+.justifyCenter {
+    text-align: center;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.no-padded-items {
+    ion-item {
+        padding:0 !important;
+    }
+}
+
+.fixed-column-1-20 {
+    > ion-row {
+        > ion-col:first {
+            width: 10px;
+        }
+    }
+    
+}
+
+@media screen and (max-width: 680px) {
+    .dynText {
+        font-size: 20px !important;
+    }
+    .dynText-small {
+        font-size: 14px !important;
+    }
+}
+
+@media screen and (min-width: 681px) and (max-width: 900px) {
+    .dynText {
+        font-size: 36px !important;
+    }
+    .dynText-small {
+        font-size: 16px !important;
+    }
+}
+
+@media screen and (min-width: 901px) and (max-width: 2048px) {
+    .dynText {
+        font-size: 48px !important;
+    }
+    .dynText-small {
+        font-size: 16px !important;
+    }
+}

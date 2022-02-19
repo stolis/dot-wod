@@ -1,15 +1,152 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> History </ion-title>
+    <ion-segment (ionChange)="toggleView($event)">
+      <ion-segment-button value="Week">
+        <ion-label>Week</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Month">
+        <ion-label>Month</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Import">
+        <ion-label>Import</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">History</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" [ngSwitch]="viewingCategory">
+  <ng-container *ngSwitchCase="categories.WEEK">
+    <div class="calendar-title padding">{{this.weekTitle}}</div>
+    <ion-grid class="no-padded-items">
+      <ion-row>
+        <ion-col class="ion-align-self-center justifyCenter" *ngFor="let day of week">
+          {{day}}
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-align-self-center justifyCenter" *ngFor="let day of week; let i = index;">
+          <round-progress [current]="wodsPerDay[i]!.duration" [max]="3600" [rounded]="true" [radius]="15" [stroke]="5">
+          </round-progress>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+  <ng-container *ngSwitchCase="categories.MONTH">
 
-  <dot-wod-explore-container name="History page"></dot-wod-explore-container>
+  </ng-container>
+  <ng-container *ngSwitchCase="categories.IMPORT">
+    <ion-grid class="no-padded-items">
+      <ion-row>
+        <ion-col class="ion-align-self-center" size="1">
+          <ion-label position="floating">Document Id</ion-label>
+        </ion-col>
+        <ion-col class="ion-align-self-center">
+          <ion-input [(ngModel)]="documentId"></ion-input>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-align-self-center" size="1">
+          <ion-label position="floating">Sheet Name</ion-label>
+        </ion-col>
+        <ion-col class="ion-align-self-center">
+          <ion-input [(ngModel)]="sheetName"></ion-input>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-align-self-center" size="12">
+          <ion-button (click)="import()">Import</ion-button>          
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid class="no-padded-items">
+      <ion-row>
+        <ion-col>
+          <ion-label>Id</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Date</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Format</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Timecap</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Rounds</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Type</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Exercise</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Counts</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Equipment</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Qty</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Gauge</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Reps</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Done in</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Total Reps</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngFor="let row of importedWods">
+        <ion-col>
+          <ion-label>{{row.id}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.started_at}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.formatId}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.timecap}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.exercises![0].rounds}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.schedule}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.exercises![0].exerciseId}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.exercises![0].role}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.exercises![0].equipmentId}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.exercises![0].equipmentQty}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>Eq W/H</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.exercises![0].goal}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.duration}}</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-label>{{row.exercises![0].achieved}}</ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
 </ion-content>

@@ -28,6 +28,11 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
+        path: 'now',
+        loadChildren: () => import('./now/now.module').then((m) => m.NowPageModule),
+        canActivate: [AuthGuard]
+      },
+      {
         path: '',
         redirectTo: '/tabs/login',
         pathMatch: 'full',

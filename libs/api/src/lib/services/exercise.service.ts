@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BaseServiceClass, IExercise, IRow } from '../interfaces/dto';
+import { BaseServiceClass, IExercise } from '../interfaces/dto';
 import { ProviderService } from '.';
 import { DB_TABLES } from '../types/ui';
 import { BaseService } from './base.service';

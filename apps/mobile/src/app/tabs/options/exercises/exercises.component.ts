@@ -1,6 +1,8 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ProviderService, ExerciseService, IExercise, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS, EquipmentService, IEquipment, toDTO, DOTWOD_EXERCISEGAUGE } from '@dot-wod/api';
+import { ProviderService, ExerciseService, IExercise, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS, EquipmentService, IEquipment, toDTO, DOTWOD_EXERCISEGAUGE, TakeUntilDestroy } from '@dot-wod/api';
 import { AlertController, IonItemSliding } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { OptionsDirective } from '../options.directive';
 
 @Component({
@@ -8,8 +10,13 @@ import { OptionsDirective } from '../options.directive';
   templateUrl: './exercises.component.html',
   styleUrls: ['./exercises.component.scss']
 })
+
+@TakeUntilDestroy
 export class ExercisesComponent extends OptionsDirective implements OnInit {
+  private componentDestroy!: () => Observable<unknown>;
   @ViewChildren(IonItemSliding) slides!: QueryList<IonItemSliding>;
+  uiExercises!: Array<IExercise>;
+  orderIsAscending: boolean = false;
   editItem: IExercise | undefined;
   equipment!: Array<IEquipment>;
   exerciseTypes = Object.values(DOTWOD_EXERCISETYPES);
@@ -18,16 +25,33 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
   
   constructor(public svc: ExerciseService, public api: ProviderService, public alert: AlertController, public equipSvc: EquipmentService) { 
     super(svc,api,alert);
+    this.svc._collection
+    .pipe(takeUntil(this.componentDestroy()))
+    .subscribe((exercises) => {
+      if (exercises?.length > 0){
+        this.uiExercises = (exercises as Array<IExercise>).sort((a,b) => a.name! < b.name! ? this.orderIsAscending ? -1 : 1 : this.orderIsAscending ? 1 : -1);
+      }
+    });
   }
 
   ngOnInit(): void {}
 
   override toggleAdd(): void {
     const newExercise = { user_id: this.api.user.id, exercise_equipment_map: [{ user_id: this.api.user.id, equipment: [] }], toDTO: toDTO };
-    this.svc.collection = [...this.svc.collection, newExercise];
-    this.editItem = this.svc.collection[this.svc.collection.length - 1] as IExercise;
-    /* const self = this;
-    setTimeout(() => { self.slides.last.open('start'); }, 1000); */
+    if (this.orderIsAscending) {
+      this.uiExercises = [...this.uiExercises, newExercise] as Array<IExercise>;
+      this.editItem = this.uiExercises[this.svc.collection.length - 1] as IExercise;
+    }
+    else {
+      this.uiExercises = [newExercise, ...this.svc.collection] as Array<IExercise>;
+      this.editItem = this.uiExercises[0] as IExercise;
+    }
+    
+  }
+
+  toggleOrder() {
+    this.orderIsAscending = !this.orderIsAscending;
+    this.uiExercises = this.uiExercises.sort((a,b) => a.name! < b.name! ? this.orderIsAscending ? -1 : 1 : this.orderIsAscending ? 1 : -1);
   }
 
   override applyEdit() {
@@ -41,8 +65,6 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
       }
     }
     this.editItem = undefined;
-    //const slide = this.slides.get(index) as IonItemSliding;
-    //slide.close();
   }
 
   override refresh() {
@@ -90,7 +112,6 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
   }
 
   setEquipment(event: any) {
-
     this.editItem!.exercise_equipment_map[0].equipment = event.detail.value as Array<number>;
   }
 
