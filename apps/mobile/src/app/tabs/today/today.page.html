@@ -35,7 +35,7 @@
     </ion-button>
   </ion-list-header>
   <ion-list>
-    <ion-item-sliding #wodsSlide *ngFor="let item of svc.wods; let i = index;">
+    <ion-item-sliding #wodsSlide *ngFor="let item of historyWods; let i = index;">
       <ion-item *ngIf="!editItem && !editExercise">
         <ion-grid class="no-padded-items">
           <ion-row>
@@ -50,7 +50,7 @@
               <ion-button (click)="toggleExerciseAdd(item)">add exercise</ion-button>
             </ion-col>
           </ion-row>
-          <ion-row *ngFor="let ex of item.exercises" (click)="toggleExerciseEdit(item,ex)">
+          <!-- <ion-row *ngFor="let ex of item.exercises" (click)="toggleExerciseEdit(item,ex)">
             <ion-col size="1" class="ion-align-self-center">
             </ion-col>
             <ion-col size="2" class="ion-align-self-center">
@@ -65,7 +65,7 @@
                 {{eq.name}} {{eq.weight ? ' ' + eq.weight + 'k' : ''}} {{eq.height ? '(' + eq.height + ' cm)' : ''}}
               </ion-chip>
             </ion-col>
-          </ion-row>
+          </ion-row> -->
         </ion-grid>
       </ion-item>
       <ion-item-options *ngIf="item.user_id === api.user?.id" side="end">
@@ -107,7 +107,7 @@
         </ion-row>
       </ion-grid>
     </form>
-    <form *ngIf="editItem && editExercise as IWodExercise" #exerciseForm>
+    <!-- <form *ngIf="editItem && editExercise as IWodExercise" #exerciseForm>
       <ion-grid>
         <ion-row color="primary">
           <ion-col size="1"></ion-col>
@@ -142,6 +142,6 @@
             <ion-col size="1"></ion-col>
         </ion-row>
       </ion-grid>
-    </form>
+    </form> -->
   </ion-list>
 </ion-content>

@@ -11,7 +11,7 @@ import { BaseService } from 'libs/api/src/lib/services/base.service';
 })
 export class OptionsDirective {
   @ViewChildren(IonItemSliding) slides!: QueryList<IonItemSliding>;
-  editItem: IRow | undefined;
+  editItem?: IRow;
   service: any;
   
   constructor(public svc: BaseServiceClass, public api: ProviderService, public alert: AlertController) { }

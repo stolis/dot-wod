@@ -20,7 +20,6 @@ export interface IWod extends IRow {
   formatId?: number;
   timecap?: number;
   rounds?: number;
-  exercises?: Array<IWodExercise>;
   started_at?: Date;
   finished_at?: Date;
   status?: DOTWOD_STATUS;
@@ -54,15 +53,17 @@ export interface IEquipment extends IRow {
 
 //#region Child Entities
 
-export interface IWodExercise {
+export interface IExerciseHistory {
+  id?: number;
+  wodId?: number;
   exerciseId?: number;
   role?: DOTWOD_EXERCISEROLE;
-  rounds?: number;
-  achievedOffset?: number;
-  goal?: number;
-  achieved?: number;
   equipmentId?: number;
   equipmentQty?: number;
+  goal?: number;
+  rounds?: number;
+  achievedOffset?: number;
+  achieved?: number;
 }
 
 export interface IProgram {

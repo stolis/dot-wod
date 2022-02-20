@@ -193,7 +193,7 @@ export class NowPage implements OnInit {
   }
 
   public logWod(wod: IWod): void {
-    const canBeWritten = wod.exercises?.every( ex => ex.achieved !== undefined || ex.rounds !== undefined);
+    /* const canBeWritten = wod.exercises?.every( ex => ex.achieved !== undefined || ex.rounds !== undefined);
     if (canBeWritten) {
       wod.exercises?.forEach( ex => {
         if (ex.achieved === undefined){
@@ -204,7 +204,7 @@ export class NowPage implements OnInit {
         wod.status = DOTWOD_STATUS.LOGGED;
       }
       console.log(wod.id, ' is written in history');
-    }
+    } */
   }
 
   private convertSecondstoTime(sec: number) {

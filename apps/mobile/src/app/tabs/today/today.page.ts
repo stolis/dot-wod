@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DOTWOD_EXERCISETYPES, IExerciseType, ISchedule, IWod, ScheduleService, FormatService, TakeUntilDestroy, IFormat, ProviderService, WodService, IWodExercise, IExercise, ExerciseService, DOTWOD_EXERCISEROLE, IEquipment, EquipmentService, IRow } from '@dot-wod/api';
+import { DOTWOD_EXERCISETYPES, IExerciseType, ISchedule, IWod, ScheduleService, FormatService, TakeUntilDestroy, IFormat, ProviderService, WodService, IExerciseHistory, IExercise, ExerciseService, DOTWOD_EXERCISEROLE, IEquipment, EquipmentService, IRow } from '@dot-wod/api';
 import { AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -13,11 +13,12 @@ import { OptionsDirective } from '../options/options.directive';
 })
 @TakeUntilDestroy
 export class TodayPage extends OptionsDirective implements OnInit, OnDestroy {
-  editItem: IWod | undefined;
-  editExercise?: IWodExercise; 
+  editItem?: IWod;
+  editExercise?: IExerciseHistory; 
   today: Date = new Date();
   todaysTypes!: Array<IExerciseType>;
-  wods!: Array<IWod>;
+  historyWods!: Array<IWod>;
+  historyExercises!: Array<IExerciseHistory>;
   formats!: Array<IFormat>;
   exercises!: Array<IExercise>;
   roles = Object.values(DOTWOD_EXERCISEROLE);
@@ -88,7 +89,7 @@ export class TodayPage extends OptionsDirective implements OnInit, OnDestroy {
   invite(): void {}
 
   save(): void {
-    this.svc.update(this.wods);
+    this.svc.update(this.historyWods);
   }
 
   start(): void {
@@ -110,17 +111,17 @@ export class TodayPage extends OptionsDirective implements OnInit, OnDestroy {
     this.editExercise = { };
   }
 
-  toggleExerciseEdit(wod: IWod, wodExercise: IWodExercise) {
+  toggleExerciseEdit(wod: IWod, wodExercise: IExerciseHistory) {
     this.editItem = wod;
     this.editExercise = wodExercise;
-    const exercise = this.exercises.find( ex => ex.id === this.editExercise!.exerciseId);
-    this.exerciseEquipment = this.equipment!.filter( eq => exercise?.exercise_equipment_map[0].equipment?.includes(eq.id!)) ?? [];
+    const exercise = this.historyExercises.find( ex => ex.id === this.editExercise!.exerciseId);
+    //this.exerciseEquipment = this.equipment!.filter( eq => exercise?.exercise_equipment_map[0].equipment?.includes(eq.id!)) ?? [];
   }
 
   setExercise(event: any) {
     this.editExercise!.exerciseId = event.detail.value as number;
-    const exercise = this.exercises.find( ex => ex.id === this.editExercise!.exerciseId);
-    this.exerciseEquipment = this.equipment!.filter( eq => exercise?.exercise_equipment_map[0].equipment?.includes(eq.id!)) ?? [];
+    const exercise = this.historyExercises.find( ex => ex.id === this.editExercise!.exerciseId);
+    //this.exerciseEquipment = this.equipment!.filter( eq => exercise?.exercise_equipment_map[0].equipment?.includes(eq.id!)) ?? [];
   }
 
   setRole(event: any) {
@@ -132,17 +133,17 @@ export class TodayPage extends OptionsDirective implements OnInit, OnDestroy {
   }
 
   applyEditExercise() {
-    if (this.editExercise){
-      const exists = this.editItem!.exercises?.find( ex => ex.exerciseId === this.editExercise?.exerciseId);
+    /* if (this.editExercise){
+      const exists = this.editWod!.exercises?.find( ex => ex.exerciseId === this.editExercise?.exerciseId);
       if (exists) {
-        this.editItem!.exercises?.map(ex => ex.exerciseId === this.editExercise!.exerciseId ? this.editExercise! : ex);
+        this.editWod!.exercises?.map(ex => ex.exerciseId === this.editExercise!.exerciseId ? this.editExercise! : ex);
       }
       else {
-        this.editItem!.exercises = [...(this.editItem!.exercises ?? []),this.editExercise];
+        this.editWod!.exercises = [...(this.editWod!.exercises ?? []),this.editExercise];
       }
       super.applyEdit();
     }
-    this.editItem = this.editExercise = undefined;
+    this.editWod = this.editExercise = undefined; */
   }
 
   cancelEditExercise() {

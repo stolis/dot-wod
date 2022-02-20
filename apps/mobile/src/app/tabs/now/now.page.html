@@ -21,7 +21,7 @@
             </ion-col>
             <ion-col col-2></ion-col>
         </ion-row>
-        <ion-row *ngFor="let ex of activeWod?.exercises">
+        <!-- <ion-row *ngFor="let ex of activeWod?.exercises">
             <ion-col size-md="4" size-lg="4" size-xs="2" class="ion-align-self-center justifyRight">
                 <ion-label class="dynText small-label">{{ex.goal}}</ion-label>
             </ion-col>
@@ -34,7 +34,7 @@
                     {{eq.name}} {{eq.weight ? ' ' + eq.weight + 'k' : ''}} {{eq.height ? '(' + eq.height + ' cm)' : ''}}
                 </ion-chip>
             </ion-col>
-        </ion-row>
+        </ion-row> -->
     </ion-grid>
     <form *ngIf="watchStatus === status.LOGGING">
         <ion-grid *ngFor="let wod of wods | filterBy: 'status': status.FINISHED">

@@ -71,13 +71,13 @@ export const DOTWOD_EXERCISEROLE = {
 export type DOTWOD_EXERCISEROLE = typeof DOTWOD_EXERCISEROLE[keyof typeof DOTWOD_EXERCISEROLE];
 
 export const DB_TABLES = {
-    SCHEDULES: 'schedule',
-    WODS: 'wod',
-    FORMATS: 'format',
-    EXERCISES: 'exercise',
-    EQUIPMENT: 'equipment',
-    EQUIP4EXR: 'exercise_equipment_map',
-    HISTORY: 'wod_history'
+    SCHEDULES: 'available_schedule',
+    FORMATS: 'available_format',
+    EXERCISES: 'available_exercise',
+    EQUIPMENT: 'available_equipment',
+    EQUIP4EXR: 'available_exercise_equipment_map',
+    HISTORY_WODS: 'history_wod',
+    HISTORY_EXERCISES: 'history_exercise'
 } as const;
 
 export type DB_TABLES = typeof DB_TABLES[keyof typeof DB_TABLES];

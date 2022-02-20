@@ -156,7 +156,7 @@ export class HistoryPage {
           schedule: this.schedules[0].program![iDt.typeId]?.exerciseType?.map(t=>t.type), //TODO
           formatId : this.formats.find(fm => fm.name === iDt.format)?.id! ?? -1,
           timecap: iDt.timecap,
-          exercises: [
+          /* exercises: [
             { 
               exerciseId: this.exercises.find(ex => ex.name === iDt.exercise)?.id! ?? -1,
               rounds: parseInt(iDt.rounds.toString()),
@@ -166,7 +166,7 @@ export class HistoryPage {
               goal: iDt.goal,
               role: this.getRoleFromCounts(iDt.counts) //TODO iDt.counts
             }
-          ],
+          ], */
           duration: this.getSecondsFromDuration(iDt.duration),
           rounds: parseInt(iDt.rounds.toString()), 
           inserted_at: iDt.started_at,
