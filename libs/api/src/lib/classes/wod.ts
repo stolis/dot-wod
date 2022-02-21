@@ -3,7 +3,7 @@ import { DOTWOD_EXERCISEROLE, DOTWOD_EXERCISETYPES, DOTWOD_STATUS } from "../typ
 
 export class Wod implements IWod {
     id?: number;
-    importId?: number;
+    imported_id?: number;
     name?: string;
     schedule?: Array<DOTWOD_EXERCISETYPES>;
     formatId?: number;
@@ -13,7 +13,7 @@ export class Wod implements IWod {
     toDTO(): IWod {
       return {
         id: this.id,
-        importId: this.importId,
+        imported_id: this.imported_id,
         name: this.name,
         schedule: this.schedule,
         formatId: this.formatId,
@@ -25,7 +25,7 @@ export class Wod implements IWod {
     constructor(iwod?: IWod) {
       if (iwod) {
         this.id = iwod.id;
-        this.importId = iwod.importId;
+        this.imported_id = iwod.imported_id;
         this.name = iwod.name;
         this.schedule = iwod.schedule;
         this.formatId = iwod.formatId;

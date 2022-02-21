@@ -22,11 +22,12 @@ export class WodService {
 
   constructor(private api: ProviderService) { }
 
-  async getWods(onlyActive: boolean = false) {
-    if (this.wods?.length > 0){
+  async getWods(onlyActive: boolean = false, force: boolean = false) {
+    if (this.wods?.length > 0 && !force){
       return this.wods;
     }
     else {
+      this.wods = [];
       const userId = this.api.user.id;
       const filters = onlyActive ? { user_id: userId, status: 'Ready' } : { user_id: userId };
       const iWodResults: Array<IWodResult> = (await this.api.getBy(DB_TABLES.WOD_RESULTS, filters)).data as Array<IWodResult>;

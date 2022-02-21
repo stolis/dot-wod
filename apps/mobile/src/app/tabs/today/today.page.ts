@@ -81,6 +81,7 @@ export class TodayPage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log('today - init')
     this.loadWods();
   }
 
@@ -95,7 +96,7 @@ export class TodayPage implements OnInit, OnDestroy {
   }
 
   async loadWods() {
-    this.wods = await this.wodSvc.getWods(true);
+    this.wods = await this.wodSvc.getWods(true,true);
   }
 
   async applyEdit() {

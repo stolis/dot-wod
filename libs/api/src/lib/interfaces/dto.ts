@@ -6,7 +6,7 @@ import { toDTO } from '../functions/helpers';
 
 export interface IWod {
   id?: number;
-  importId?: number;
+  imported_id?: number;
   name?: string;
   schedule?: Array<DOTWOD_EXERCISETYPES>;
   formatId?: number;
