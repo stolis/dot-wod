@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { dateDiff, DOTWOD_LOGBY, DOTWOD_STATUS, DOTWOD_TIMEDIRECTION, EquipmentService, ExerciseService, FormatService, HistoryService, IEquipment, IExercise, IFormat, IWod, TakeUntilDestroy, WodService } from '@dot-wod/api';
+import { dateDiff, DOTWOD_LOGBY, DOTWOD_STATUS, DOTWOD_TIMEDIRECTION, EquipmentService, ExerciseService, FormatService, HistoryService, IAvailableEquipment, IAvailableExercise, IAvailableFormat, IWod, TakeUntilDestroy, WodService } from '@dot-wod/api';
 import { AlertController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -16,9 +16,9 @@ export class NowPage implements OnInit {
   private requirements: number = 4;
   private currentLoad: BehaviorSubject<number> = new BehaviorSubject(0);
 
-  formats!: Array<IFormat>;
-  exercises!: Array<IExercise>;
-  equipment!: Array<IEquipment>;
+  formats!: Array<IAvailableFormat>;
+  exercises!: Array<IAvailableExercise>;
+  equipment!: Array<IAvailableEquipment>;
   wods!: Array<IWod>;
   activeWod!: IWod;
 
@@ -54,20 +54,20 @@ export class NowPage implements OnInit {
       }
     });
 
-    this.svc._collection
+    /* this.svc._collection
     .pipe(takeUntil(this.componentDestroy()))
-    .subscribe((wods) => {
+    .subscribe((wods: Array<IWod>) => {
         if (wods?.length > 0){
           this.wods = wods as Array<IWod>;
           this.currentLoad.next(this.currentLoad.value + 1);
         }
-      });
+      }); */
 
     this.formatSvc._collection
     .pipe(takeUntil(this.componentDestroy()))
     .subscribe((formats) => {
       if (formats?.length > 0){
-        this.formats = formats as Array<IFormat>;
+        this.formats = formats as Array<IAvailableFormat>;
         this.currentLoad.next(this.currentLoad.value + 1);
       }
     });
@@ -76,7 +76,7 @@ export class NowPage implements OnInit {
     .pipe(takeUntil(this.componentDestroy()))
     .subscribe((exercises) => {
       if (exercises?.length > 0){
-        this.exercises = exercises as Array<IExercise>;
+        this.exercises = exercises as Array<IAvailableExercise>;
         this.currentLoad.next(this.currentLoad.value + 1);
       }
     });
@@ -85,7 +85,7 @@ export class NowPage implements OnInit {
     .pipe(takeUntil(this.componentDestroy()))
     .subscribe((equipment) => {
       if (equipment?.length > 0){
-        this.equipment = equipment as Array<IEquipment>;
+        this.equipment = equipment as Array<IAvailableEquipment>;
         this.currentLoad.next(this.currentLoad.value + 1);
       }
     });
@@ -123,7 +123,7 @@ export class NowPage implements OnInit {
   }
 
   toggleTimer() {
-    if (this.watchStatus === DOTWOD_STATUS.RUNNING) {
+    /* if (this.watchStatus === DOTWOD_STATUS.RUNNING) {
       this.watchStatus = DOTWOD_STATUS.PAUSED;
       this.watchTitle = this.watchStatus; 
       this.watchTimer.pause();
@@ -135,16 +135,16 @@ export class NowPage implements OnInit {
       this.watchStatus = DOTWOD_STATUS.RUNNING;
       this.watchTitle = this.convertSecondstoTime(this.watchCurrent);
       this.watchTimer.start();
-    }
+    } */
   }
 
   finishWod() {
-    this.watchTimer.stop();
+    /* this.watchTimer.stop();
     this.activeWod.finished_at = new Date();
     this.activeWod.duration = dateDiff(this.activeWod.started_at!,this.activeWod.finished_at)/1000; 
     this.activeWod.status = DOTWOD_STATUS.FINISHED;
     this.watchStatus = this.wods.some(w => !w.finished_at) ? DOTWOD_STATUS.FINISHED : DOTWOD_STATUS.FINISHEDALL;
-    this.watchTitle = this.watchStatus;
+    this.watchTitle = this.watchStatus; */
   }
 
   registerWod() {
@@ -152,7 +152,7 @@ export class NowPage implements OnInit {
   }
 
   async startNext() {
-    const activeIndex = this.wods.findIndex( wod => wod.id === this.activeWod.id);
+    /* const activeIndex = this.wods.findIndex( wod => wod.id === this.activeWod.id);
     if (activeIndex !== this.wods.length - 1){
       this.initWod(activeIndex + 1);
     }
@@ -181,15 +181,15 @@ export class NowPage implements OnInit {
         this.wods.forEach( wod => this.history.add(wod));
         this.router.navigateByUrl('/tabs/history');
       }
-    }
+    } */
   }
 
   public logWods(): void {
-    this.wods!.forEach( wod => {
+    /* this.wods!.forEach( wod => {
       if (wod.status !== DOTWOD_STATUS.LOGGED){
         this.logWod(wod);
       }
-    })
+    }) */
   }
 
   public logWod(wod: IWod): void {

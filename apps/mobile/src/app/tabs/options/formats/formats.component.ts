@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ProviderService, DOTWOD_TIMEDIRECTION, IFormat, FormatService, DOTWOD_LOGBY } from '@dot-wod/api';
+import { ProviderService, DOTWOD_TIMEDIRECTION, IAvailableFormat, FormatService, DOTWOD_LOGBY } from '@dot-wod/api';
 import { IonItemSliding, AlertController } from '@ionic/angular';
 import { OptionsDirective } from '../options.directive';
 
@@ -10,7 +10,7 @@ import { OptionsDirective } from '../options.directive';
 })
 export class FormatsComponent extends OptionsDirective implements OnInit {
   @ViewChildren(IonItemSliding) slides!: QueryList<IonItemSliding>;
-  editItem: IFormat | undefined;
+  editItem: IAvailableFormat | undefined;
   timeDirections = Object.values(DOTWOD_TIMEDIRECTION);
   logByTypes = Object.values(DOTWOD_LOGBY);
 

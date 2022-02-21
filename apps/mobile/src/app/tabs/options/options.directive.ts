@@ -26,6 +26,7 @@ export class OptionsDirective {
   }
 
   applyEdit() {
+    console.log(this.editItem);
     if (this.editItem){
       if (this.editItem.id && this.editItem.id > 0){
         this.svc.update(this.editItem);

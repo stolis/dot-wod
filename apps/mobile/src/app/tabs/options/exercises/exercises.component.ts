@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { ProviderService, ExerciseService, IExercise, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS, EquipmentService, IEquipment, toDTO, DOTWOD_EXERCISEGAUGE, TakeUntilDestroy } from '@dot-wod/api';
+import { ProviderService, ExerciseService, IAvailableExercise, DOTWOD_EXERCISETYPES, DOTWOD_MUSCLEGROUPS, EquipmentService, IAvailableEquipment, toDTO, DOTWOD_EXERCISEGAUGE, TakeUntilDestroy } from '@dot-wod/api';
 import { AlertController, IonItemSliding } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -15,10 +15,10 @@ import { OptionsDirective } from '../options.directive';
 export class ExercisesComponent extends OptionsDirective implements OnInit {
   private componentDestroy!: () => Observable<unknown>;
   @ViewChildren(IonItemSliding) slides!: QueryList<IonItemSliding>;
-  uiExercises!: Array<IExercise>;
+  uiExercises!: Array<IAvailableExercise>;
   orderIsAscending: boolean = false;
-  editItem: IExercise | undefined;
-  equipment!: Array<IEquipment>;
+  editItem: IAvailableExercise | undefined;
+  equipment!: Array<IAvailableEquipment>;
   exerciseTypes = Object.values(DOTWOD_EXERCISETYPES);
   muscleGroups = Object.values(DOTWOD_MUSCLEGROUPS);
   gauges = Object.values(DOTWOD_EXERCISEGAUGE);
@@ -29,7 +29,7 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
     .pipe(takeUntil(this.componentDestroy()))
     .subscribe((exercises) => {
       if (exercises?.length > 0){
-        this.uiExercises = (exercises as Array<IExercise>).sort((a,b) => a.name! < b.name! ? this.orderIsAscending ? -1 : 1 : this.orderIsAscending ? 1 : -1);
+        this.uiExercises = (exercises as Array<IAvailableExercise>).sort((a,b) => a.name! < b.name! ? this.orderIsAscending ? -1 : 1 : this.orderIsAscending ? 1 : -1);
       }
     });
   }
@@ -39,12 +39,12 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
   override toggleAdd(): void {
     const newExercise = { user_id: this.api.user.id, exercise_equipment_map: [{ user_id: this.api.user.id, equipment: [] }], toDTO: toDTO };
     if (this.orderIsAscending) {
-      this.uiExercises = [...this.uiExercises, newExercise] as Array<IExercise>;
-      this.editItem = this.uiExercises[this.svc.collection.length - 1] as IExercise;
+      this.uiExercises = [...this.uiExercises, newExercise] as Array<IAvailableExercise>;
+      this.editItem = this.uiExercises[this.svc.collection.length - 1] as IAvailableExercise;
     }
     else {
-      this.uiExercises = [newExercise, ...this.svc.collection] as Array<IExercise>;
-      this.editItem = this.uiExercises[0] as IExercise;
+      this.uiExercises = [newExercise, ...this.svc.collection] as Array<IAvailableExercise>;
+      this.editItem = this.uiExercises[0] as IAvailableExercise;
     }
     
   }
@@ -71,7 +71,7 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
     this.svc.load(this.api.user.id);
   }
 
-  async deleteWithWarning(item: IExercise) {
+  async deleteWithWarning(item: IAvailableExercise) {
     const alert = await this.alert.create({
       header: 'Confirm delete',
       message: `Do you wish to delete ${item.name}?`,

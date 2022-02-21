@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BaseServiceClass, IExercise } from '../interfaces/dto';
+import { BaseServiceClass, IAvailableExercise } from '../interfaces/dto';
 import { ProviderService } from '.';
 import { DB_TABLES } from '../types/ui';
 import { BaseService } from './base.service';
@@ -57,6 +57,6 @@ export class ExerciseService extends BaseService implements BaseServiceClass {
   }
 
   get exercises() {
-    return this.collection as Array<IExercise>;
+    return this.collection as Array<IAvailableExercise>;
   }
 }

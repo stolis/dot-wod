@@ -76,8 +76,9 @@ export const DB_TABLES = {
     EXERCISES: 'available_exercise',
     EQUIPMENT: 'available_equipment',
     EQUIP4EXR: 'available_exercise_equipment_map',
-    HISTORY_WODS: 'history_wod',
-    HISTORY_EXERCISES: 'history_exercise'
+    WODS: 'wod',
+    WOD_RESULTS: 'wod_result',
+    WOD_EXERCISES: 'wod_exercise'
 } as const;
 
 export type DB_TABLES = typeof DB_TABLES[keyof typeof DB_TABLES];

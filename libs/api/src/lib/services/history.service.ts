@@ -11,7 +11,7 @@ export class HistoryService extends BaseService implements BaseServiceClass {
 
   constructor(api: ProviderService) { 
     super(api);
-    this.db_tables = [DB_TABLES.HISTORY_WODS];
+    this.db_tables = [DB_TABLES.WODS];
     this.load();
   }
 

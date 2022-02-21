@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { IEquipment } from '../interfaces/dto';
+import { IAvailableEquipment } from '../interfaces/dto';
 import { DB_TABLES } from '../types/ui';
 import { BaseService } from './base.service';
 import { ProviderService } from './provider.service';
@@ -17,7 +17,7 @@ export class EquipmentService extends BaseService {
   }
 
   get equipment() {
-    return this.collection as Array<IEquipment>;
+    return this.collection as Array<IAvailableEquipment>;
   }
   
 }

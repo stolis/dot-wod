@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { IEquipment, EquipmentService, ProviderService } from '@dot-wod/api';
+import { IAvailableEquipment, EquipmentService, ProviderService } from '@dot-wod/api';
 import { IonItemSliding, AlertController } from '@ionic/angular';
 import { OptionsDirective } from '../options.directive';
 
@@ -10,7 +10,7 @@ import { OptionsDirective } from '../options.directive';
 })
 export class EquipmentComponent extends OptionsDirective implements OnInit {
   @ViewChildren(IonItemSliding) slides!: QueryList<IonItemSliding>;
-  editItem: IEquipment | undefined;
+  editItem: IAvailableEquipment | undefined;
   
   constructor(public svc: EquipmentService, public api: ProviderService, public alert: AlertController) { 
     super(svc,api,alert);

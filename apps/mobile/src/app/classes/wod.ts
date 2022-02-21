@@ -1,3 +1,4 @@
+import { DOTWOD_EXERCISETYPES, DOTWOD_STATUS, IWod, IWodExercise, IWodResult } from '@dot-wod/api';
 import { Observable, Subject, Subscription, timer } from 'rxjs';
 import {
   ExerciseAttributeEnum,
@@ -31,14 +32,6 @@ export class WodDay {
   schedule: string | undefined;
 }
 
-export class Wod {
-  id: number | undefined;
-  format: FormatEnum | undefined;
-  timecap: number | undefined;
-  rounds: number | undefined;
-  flow: FormatFlowEnum | undefined;
-  exercises: Array<Exercise> | undefined;
-}
 
 export class Exercise {
   id: number | undefined;

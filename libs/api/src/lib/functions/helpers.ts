@@ -3,15 +3,25 @@ export function enum_byValue<T extends {[index:string]:string}>(myEnum:T, enumVa
     return keys.length > 0 ? keys[0] : null;
 }
 
-export function toDTO(item: any, properties: Array<string>) {
-    if (properties?.length > 0){
-        const removeProp = properties.pop();
+export function toDTO(item: any, removeProps: Array<string>) {
+    if (removeProps?.length > 0){
+        const removeProp = removeProps.pop();
         const { [removeProp!]: remove, ...rest } = item;
-        item = toDTO(rest,properties);
+        item = toDTO(rest,removeProps);
         return item;    
     }
     return item; 
 }
+
+export function compareWith(f1: any, f2: any) {
+  if (Array.isArray(f2)) {
+    if (!f1) {
+      return false;
+    }
+    return f2.find(val => val === f1);
+  }
+  return f1 === f2;
+};
 
 export function dateDiff(a: Date, b: Date) {
   const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate(), a.getHours(), a.getMinutes(), a.getSeconds());

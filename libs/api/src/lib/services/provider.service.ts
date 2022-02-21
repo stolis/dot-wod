@@ -113,9 +113,13 @@ export class ProviderService {
     return await this.dbClient.from(table).select('*');
   }
 
+  async getBy(table: DB_TABLES, by: any){
+    return await this.dbClient.from(table).select('*').match(by);  
+  }
+
   async add(table: DB_TABLES, item: any){
-    const userId = this.dbClient.auth.user()?.id;
-    item.user_id = userId;
+    /* const userId = this.dbClient.auth.user()?.id;
+    item.user_id = userId; */
     return await this.dbClient.from(table).insert(item);
   }
 
@@ -126,6 +130,10 @@ export class ProviderService {
 
   async remove(table: DB_TABLES, id: number, prop: string = 'id'){
     return await this.dbClient.from(table).delete().match({ [prop]: id });
+  }
+
+  async removeMany(table: DB_TABLES, values: Array<number>, prop: string = 'id'){
+    return await this.dbClient.from(table).delete().in(prop, values);
   }
 
   //#endregion

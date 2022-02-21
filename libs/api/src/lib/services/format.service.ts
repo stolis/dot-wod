@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ProviderService } from '.';
-import { BaseServiceClass, IFormat } from '../interfaces/dto';
+import { BaseServiceClass, IAvailableFormat } from '../interfaces/dto';
 import { DB_TABLES } from '../types/ui';
 import { BaseService } from './base.service';
 
@@ -16,6 +16,6 @@ export class FormatService extends BaseService implements BaseServiceClass {
   }
 
   get formats() {
-    return this.collection as Array<IFormat>;
+    return this.collection as Array<IAvailableFormat>;
   }
 }

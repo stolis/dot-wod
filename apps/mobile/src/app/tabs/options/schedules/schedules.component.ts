@@ -1,5 +1,5 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { DOTWOD_EXERCISETYPES, IExerciseType, ISchedule, ProviderService, ScheduleService } from '@dot-wod/api';
+import { DOTWOD_EXERCISETYPES, IExerciseType, IAvailableSchedule, ProviderService, ScheduleService } from '@dot-wod/api';
 import { AlertController, IonItemSliding } from '@ionic/angular';
 import { OptionsDirective } from '../options.directive';
 
@@ -10,7 +10,7 @@ import { OptionsDirective } from '../options.directive';
 })
 export class SchedulesComponent extends OptionsDirective implements OnInit  {
   @ViewChildren(IonItemSliding) slides!: QueryList<IonItemSliding>;
-  editItem: ISchedule | undefined;
+  editItem: IAvailableSchedule | undefined;
   
   constructor(public svc: ScheduleService, public api: ProviderService, public alert: AlertController) { 
     super(svc,api,alert);

@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { dateDiff, DOTWOD_EXERCISEROLE, DOTWOD_HISTORY, EquipmentService, ExerciseService, FormatService, GoogleSheetApiService, HistoryService, IEquipment, IExercise, IFormat, ISchedule, IWod, ProviderService, ScheduleService, TakeUntilDestroy } from '@dot-wod/api';
+import { dateDiff, DOTWOD_EXERCISEROLE, DOTWOD_HISTORY, EquipmentService, ExerciseService, FormatService, GoogleSheetApiService, HistoryService, IAvailableEquipment, IAvailableExercise, IAvailableFormat, IAvailableSchedule, IWod, ProviderService, ScheduleService, TakeUntilDestroy } from '@dot-wod/api';
 import { Observable } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -53,10 +53,10 @@ const gSheetMap = {
 @TakeUntilDestroy
 export class HistoryPage {
   private componentDestroy!: () => Observable<unknown>;
-  schedules!: Array<ISchedule>;
-  formats!: Array<IFormat>;
-  exercises!: Array<IExercise>;
-  equipment!: Array<IEquipment>;
+  schedules!: Array<IAvailableSchedule>;
+  formats!: Array<IAvailableFormat>;
+  exercises!: Array<IAvailableExercise>;
+  equipment!: Array<IAvailableEquipment>;
 
   importedWods!: Array<IWod>;
   week = ['S','M','T','W','T','F','S'];
@@ -90,7 +90,7 @@ export class HistoryPage {
     .pipe(takeUntil(this.componentDestroy()))
     .subscribe((schedules) => {
       if (schedules?.length > 0){
-        this.schedules = schedules as Array<ISchedule>;
+        this.schedules = schedules as Array<IAvailableSchedule>;
       }
     });
 
@@ -98,7 +98,7 @@ export class HistoryPage {
     .pipe(takeUntil(this.componentDestroy()))
     .subscribe((formats) => {
       if (formats?.length > 0){
-        this.formats = formats as Array<IFormat>;
+        this.formats = formats as Array<IAvailableFormat>;
       }
     });
 
@@ -106,7 +106,7 @@ export class HistoryPage {
     .pipe(takeUntil(this.componentDestroy()))
     .subscribe((exercises) => {
       if (exercises?.length > 0){
-        this.exercises = exercises as Array<IExercise>;
+        this.exercises = exercises as Array<IAvailableExercise>;
       }
     });
 
@@ -114,7 +114,7 @@ export class HistoryPage {
     .pipe(takeUntil(this.componentDestroy()))
     .subscribe((equipment) => {
       if (equipment?.length > 0){
-        this.equipment = equipment as Array<IEquipment>;
+        this.equipment = equipment as Array<IAvailableEquipment>;
       }
     });
 
@@ -122,7 +122,7 @@ export class HistoryPage {
     .pipe(takeUntil(this.componentDestroy()))
     .subscribe({
       next: (wods: Array<IWod>) => {
-        wods.forEach( wod => {
+        /* wods.forEach( wod => {
           const started_at:Date = new Date(wod.started_at!.toString());
           const index = started_at?.getDay();
           const existing = this.wodsPerDay?.find( w => w.index === index);
@@ -132,7 +132,7 @@ export class HistoryPage {
           else {
             this.wodsPerDay = [...(this.wodsPerDay || []),{ index: index, duration: wod.duration!}];
           }
-        });
+        }); */
       }
     });
   }
