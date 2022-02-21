@@ -65,7 +65,7 @@ export interface IAvailableExercise extends IRow {
   type: Array<DOTWOD_EXERCISETYPES>;
   musclegroups: Array<DOTWOD_MUSCLEGROUPS>;
   gauge: DOTWOD_EXERCISEGAUGE;
-  exercise_equipment_map: Array<IAvailableExerciseEquipment>;
+  available_exercise_equipment_map: Array<IAvailableExerciseEquipment>;
 }
 
 export interface IAvailableEquipment extends IRow {

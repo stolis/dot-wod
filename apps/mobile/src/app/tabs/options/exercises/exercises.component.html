@@ -26,8 +26,8 @@
             <p *ngIf="item.type">Type: {{item.type}}</p>
             <p *ngIf="item.musclegroups">Muscle groups: {{item.musclegroups.join(',')}}</p>
             <p *ngIf="item.gauge">Counts: {{item.gauge}}</p>
-            <p *ngIf="item.exercise_equipment_map[0].equipment"> 
-              <ion-chip *ngFor="let item of equipSvc.equipment | filterBy: 'id' : item.exercise_equipment_map[0].equipment">
+            <p *ngIf="item.available_exercise_equipment_map[0].equipment"> 
+              <ion-chip *ngFor="let item of equipSvc.equipment | filterBy: 'id' : item.available_exercise_equipment_map[0].equipment">
                 {{item.name}} {{item.weight ? '(' + item.weight + ' kgr)' : ''}} {{item.height ? '(' + item.height + ' cm)' : ''}}
               </ion-chip>
             </p>
@@ -74,7 +74,7 @@
                   </ion-item>
                   <ion-item>
                     <ion-label position="floating">Equipment</ion-label>
-                    <ion-select [value]="editItem.exercise_equipment_map[0].equipment" (ionChange)="setEquipment($event)" multiple="true" [compareWith]="compareWith">
+                    <ion-select [value]="editItem.available_exercise_equipment_map[0].equipment" (ionChange)="setEquipment($event)" multiple="true" [compareWith]="compareWith">
                       <ion-select-option [value]="-1">Body Weight</ion-select-option>
                       <ion-select-option *ngFor="let item of equipSvc.equipment | filterBy:'isSubscribed':true" 
                         [value]="item.id">{{item.name}} {{item.weight ? '(' + item.weight + ' kgr)' : ''}} {{item.height ? '(' + item.height + ' cm)' : ''}}

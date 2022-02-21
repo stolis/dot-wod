@@ -35,7 +35,7 @@
     </ion-button>
   </ion-list-header>
   <ion-list>
-    <ion-item-sliding #wodsSlide *ngFor="let item of (wodSvc._wods | async); let i = index;">
+    <ion-item-sliding #wodsSlide *ngFor="let item of (wodSvc._wods | async) as Wod; let i = index;">
       <ion-item *ngIf="!editWod && !editExercise">
         <ion-grid class="no-padded-items">
           <ion-row>
@@ -50,7 +50,7 @@
               <ion-button (click)="toggleExerciseAdd(item)">add exercise</ion-button>
             </ion-col>
           </ion-row>
-          <!-- <ion-row *ngFor="let ex of item.exercises" (click)="toggleExerciseEdit(item,ex)">
+          <ion-row *ngFor="let ex of item.results![0].exercises" (click)="toggleExerciseEdit(item,ex)">
             <ion-col size="1" class="ion-align-self-center">
             </ion-col>
             <ion-col size="2" class="ion-align-self-center">
@@ -65,7 +65,7 @@
                 {{eq.name}} {{eq.weight ? ' ' + eq.weight + 'k' : ''}} {{eq.height ? '(' + eq.height + ' cm)' : ''}}
               </ion-chip>
             </ion-col>
-          </ion-row> -->
+          </ion-row>
         </ion-grid>
       </ion-item>
       <ion-item-options side="end">
@@ -79,69 +79,65 @@
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
-    <!-- <form *ngIf="editWod && !editExercise as Wod" #wodForm> -->
-      <ion-grid *ngIf="editWod && !editExercise as Wod">
-        <ion-row color="primary">
-          <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
-              <div padding>
-                <ion-item>
-                  <ion-label position="floating">Name</ion-label>
-                  <ion-input name="exercise_name" required [(ngModel)]="editWod.name"></ion-input>
-                </ion-item>
-                <ion-item>
-                  <ion-label position="floating">Format</ion-label>
-                  <ion-select [value]="editWod.formatId" (ionChange)="setFormat($event)" [compareWith]="compareWith">
-                      <ion-select-option *ngFor="let format of formats" [value]="format.id">{{format.name}}</ion-select-option>
-                  </ion-select>
-                </ion-item>
-                <ion-item>
-                  <ion-label position="floating">Timecap (min)</ion-label>
-                  <ion-input name="timecap" type="number" [(ngModel)]="editWod.timecap"></ion-input>
-                </ion-item>
-                <ion-item>
-                  <ion-label position="floating">Rounds</ion-label>
-                  <ion-input name="timecap" type="number" [(ngModel)]="editWod.rounds"></ion-input>
-                </ion-item>
-              </div>
-            </ion-col>
-        </ion-row>
-      </ion-grid>
-    <!-- </form> -->
-    <!-- <form *ngIf="editItem && editExercise as IWodExercise" #exerciseForm>
-      <ion-grid>
-        <ion-row color="primary">
+    <ion-grid *ngIf="editWod && !editExercise as Wod">
+      <ion-row color="primary">
+        <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
+            <div padding>
+              <ion-item>
+                <ion-label position="floating">Name</ion-label>
+                <ion-input name="exercise_name" required [(ngModel)]="editWod.name"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Format</ion-label>
+                <ion-select [value]="editWod.formatId" (ionChange)="setFormat($event)" [compareWith]="compareWith">
+                    <ion-select-option *ngFor="let format of formats" [value]="format.id">{{format.name}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Timecap (min)</ion-label>
+                <ion-input name="timecap" type="number" [(ngModel)]="editWod.timecap"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Rounds</ion-label>
+                <ion-input name="timecap" type="number" [(ngModel)]="editWod.rounds"></ion-input>
+              </ion-item>
+            </div>
+          </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid *ngIf="editWod && editExercise as WodExercise">
+      <ion-row color="primary">
+        <ion-col size="1"></ion-col>
+        <ion-col align-self-center size="10">
+            <div padding>
+              <ion-item>
+                <ion-label position="floating">Exercise</ion-label>
+                <ion-select [value]="editExercise.exerciseId" (ionChange)="setExercise($event)" [compareWith]="compareWith">
+                    <ion-select-option *ngFor="let exercise of exercises" [value]="exercise.id">{{exercise.name}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Role</ion-label>
+                <ion-select [value]="editExercise.role" (ionChange)="setRole($event)" [compareWith]="compareWith">
+                  <ion-select-option *ngFor="let role of roles" [value]="role">{{role}}</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Goal (reps/meters/secs)</ion-label>
+                <ion-input name="timecap" type="number" [(ngModel)]="editExercise.goal"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Equipment</ion-label>
+                <ion-select [value]="editExercise.equipmentId" (ionChange)="setEquipment($event)" [compareWith]="compareWith">
+                    <ion-select-option *ngFor="let eq of exerciseEquipment" [value]="eq.id">
+                      {{eq.name}} {{eq.weight ? '(' + eq.weight + ' kgr)' : ''}} {{eq.height ? '(' + eq.height + ' cm)' : ''}}
+                    </ion-select-option>
+                </ion-select>
+              </ion-item>
+            </div>
+          </ion-col>
           <ion-col size="1"></ion-col>
-          <ion-col align-self-center size="10">
-              <div padding>
-                <ion-item>
-                  <ion-label position="floating">Exercise</ion-label>
-                  <ion-select [value]="editExercise.exerciseId" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setExercise($event)" [compareWith]="compareWith">
-                      <ion-select-option *ngFor="let exercise of exercises" [value]="exercise.id">{{exercise.name}}</ion-select-option>
-                  </ion-select>
-                </ion-item>
-                <ion-item>
-                  <ion-label position="floating">Role</ion-label>
-                  <ion-select [value]="editExercise.role" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setRole($event)" [compareWith]="compareWith">
-                    <ion-select-option *ngFor="let role of roles" [value]="role">{{role}}</ion-select-option>
-                  </ion-select>
-                </ion-item>
-                <ion-item>
-                  <ion-label position="floating">Goal (reps/meters/secs)</ion-label>
-                  <ion-input name="timecap" type="number" [(ngModel)]="editExercise.goal"></ion-input>
-                </ion-item>
-                <ion-item>
-                  <ion-label position="floating">Equipment</ion-label>
-                  <ion-select [value]="editExercise.equipmentId" [disabled]="editItem.user_id !== api.user?.id" (ionChange)="setEquipment($event)" [compareWith]="compareWith">
-                      <ion-select-option *ngFor="let item of exerciseEquipment" [value]="item.id">
-                        {{item.name}} {{item.weight ? '(' + item.weight + ' kgr)' : ''}} {{item.height ? '(' + item.height + ' cm)' : ''}}
-                      </ion-select-option>
-                  </ion-select>
-                </ion-item>
-              </div>
-            </ion-col>
-            <ion-col size="1"></ion-col>
-        </ion-row>
-      </ion-grid>
-    </form> -->
+      </ion-row>
+    </ion-grid>
   </ion-list>
 </ion-content>

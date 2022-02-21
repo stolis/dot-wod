@@ -57,10 +57,10 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
   override applyEdit() {
     if (this.editItem){
       if (this.editItem.id && this.editItem.id > 0){
-        this.svc.updateMultiple([this.editItem, this.editItem.exercise_equipment_map[0]]);
+        this.svc.updateMultiple([this.editItem, this.editItem.available_exercise_equipment_map[0]]);
       }
       else {
-        const exerciseEquipment = this.editItem.exercise_equipment_map[0];
+        const exerciseEquipment = this.editItem.available_exercise_equipment_map[0];
         this.svc.addMultiple([this.editItem, exerciseEquipment]);
       }
     }
@@ -85,8 +85,8 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
           text: 'Delete',
           handler: data => {
             if (item.id !== undefined){
-              if (item.exercise_equipment_map[0].id){
-                this.svc.removeMultiple([item.id, item.exercise_equipment_map[0].id]);
+              if (item.available_exercise_equipment_map[0].id){
+                this.svc.removeMultiple([item.id, item.available_exercise_equipment_map[0].id]);
               }
               else {
                 this.svc.remove(item.id);
@@ -112,7 +112,7 @@ export class ExercisesComponent extends OptionsDirective implements OnInit {
   }
 
   setEquipment(event: any) {
-    this.editItem!.exercise_equipment_map[0].equipment = event.detail.value as Array<number>;
+    this.editItem!.available_exercise_equipment_map[0].equipment = event.detail.value as Array<number>;
   }
 
   

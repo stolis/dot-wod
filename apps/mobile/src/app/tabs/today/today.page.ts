@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Wod, WodResult, DOTWOD_EXERCISETYPES, IExerciseType, IAvailableSchedule, IWod, ScheduleService, FormatService, TakeUntilDestroy, IAvailableFormat, ProviderService, WodService, IWodExercise, IAvailableExercise, ExerciseService, DOTWOD_EXERCISEROLE, IAvailableEquipment, EquipmentService, IRow, DOTWOD_STATUS, compareWith } from '@dot-wod/api';
+import { Wod, WodResult, DOTWOD_EXERCISETYPES, IExerciseType, IAvailableSchedule, IWod, ScheduleService, FormatService, TakeUntilDestroy, IAvailableFormat, ProviderService, WodService, IWodExercise, IAvailableExercise, ExerciseService, DOTWOD_EXERCISEROLE, IAvailableEquipment, EquipmentService, IRow, DOTWOD_STATUS, compareWith, WodExercise } from '@dot-wod/api';
 import { AlertController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
 @TakeUntilDestroy
 export class TodayPage implements OnInit, OnDestroy {
   editWod?: Wod;
-  editExercise?: IWodExercise; 
+  editExercise?: WodExercise; 
 
   today: Date = new Date();
   todaysTypes!: Array<IExerciseType>;
@@ -85,6 +85,14 @@ export class TodayPage implements OnInit, OnDestroy {
   }
 
   //#region Wod
+
+  toggleAdd(): void {
+    const now = new Date();
+    this.editWod = new Wod();
+    this.editWod!.name = `User on ${now.toDateString()}`;
+    this.editWod!.schedule = this.todaysTypes.filter(v => v.id).map(v => v.type);
+    this.editWod!.results = [new WodResult()];
+  }
 
   async loadWods() {
     this.wods = await this.wodSvc.getWods(true);
@@ -175,34 +183,27 @@ export class TodayPage implements OnInit, OnDestroy {
     this.router.navigateByUrl('/tabs/now');
   }
 
-  toggleAdd(): void {
-    const now = new Date();
-    this.editWod = new Wod();
-    this.editWod!.name = `User on ${now.toDateString()}`;
-    this.editWod!.schedule = this.todaysTypes.filter(v => v.id).map(v => v.type);
-    this.editWod!.results = [new WodResult()];
-  }
-
   //#endregion
 
   //#region Exercises
 
-  toggleExerciseAdd(item: IWod) {
-    /* this.editItem = item;
-    this.editExercise = { }; */
+  toggleExerciseAdd(item: Wod) {
+    this.editWod = item;
+    this.editExercise = new WodExercise();
+    this.editExercise.wod_result_id = item.results![0].id;
   }
 
-  toggleExerciseEdit(wod: IWod, wodExercise: IWodExercise) {
-    /* this.editItem = wod;
+  toggleExerciseEdit(wod: Wod, wodExercise: WodExercise) {
+    this.editWod = wod;
     this.editExercise = wodExercise;
-    const exercise = this.historyExercises.find( ex => ex.id === this.editExercise!.exerciseId);
-    this.exerciseEquipment = this.equipment!.filter( eq => exercise?.exercise_equipment_map[0].equipment?.includes(eq.id!)) ?? []; */
+    const exercise = this.exercises.find( ex => ex.id === this.editExercise!.exerciseId);
+    this.exerciseEquipment = this.equipment!.filter( eq => exercise?.available_exercise_equipment_map[0].equipment?.includes(eq.id!)) ?? [];
   }
 
   setExercise(event: any) {
-    /* this.editExercise!.exerciseId = event.detail.value as number;
-    const exercise = this.historyExercises.find( ex => ex.id === this.editExercise!.exerciseId);
-    this.exerciseEquipment = this.equipment!.filter( eq => exercise?.exercise_equipment_map[0].equipment?.includes(eq.id!)) ?? []; */
+    this.editExercise!.exerciseId = event.detail.value as number;
+    const exercise = this.exercises.find( ex => ex.id === this.editExercise!.exerciseId);
+    this.exerciseEquipment = this.equipment!.filter( eq => exercise?.available_exercise_equipment_map[0].equipment?.includes(eq.id!)) ?? [];
   }
 
   setRole(event: any) {
@@ -213,22 +214,34 @@ export class TodayPage implements OnInit, OnDestroy {
     this.editExercise!.equipmentId = event.detail.value as number;
   }
 
-  applyEditExercise() {
-    /* if (this.editExercise){
-      const exists = this.editWod!.exercises?.find( ex => ex.exerciseId === this.editExercise?.exerciseId);
-      if (exists) {
-        this.editWod!.exercises?.map(ex => ex.exerciseId === this.editExercise!.exerciseId ? this.editExercise! : ex);
+  async applyEditExercise() {
+    const toast = await this.toast.create({
+      duration: 3000
+    });
+
+    if (!this.editExercise?.id){
+      if (await this.wodSvc.addWodExercise(this.editExercise!)) {
+        toast.message = 'Exercise was added successfully!';
       }
       else {
-        this.editWod!.exercises = [...(this.editWod!.exercises ?? []),this.editExercise];
+        toast.message = 'Error adding Exercise!';
       }
-      super.applyEdit();
     }
-    this.editWod = this.editExercise = undefined; */
+    else {
+      if (await this.wodSvc.updateWodExercise(this.editExercise!)){
+        toast.message = 'Exercise was updated successfully!';
+      }
+      else {
+        toast.message = 'Error updating Exercise!';
+      }
+    }
+
+    this.cancelEditExercise();
+    toast.present();
   }
 
   cancelEditExercise() {
-    /* this.editItem = this.editExercise = undefined; */
+    this.editWod = this.editExercise = undefined;
   }
 
   //#endregion

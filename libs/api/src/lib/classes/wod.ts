@@ -1,5 +1,5 @@
 import { IWod, IWodResult, IWodExercise } from "../interfaces/dto";
-import { DOTWOD_EXERCISETYPES, DOTWOD_STATUS } from "../types/ui";
+import { DOTWOD_EXERCISEROLE, DOTWOD_EXERCISETYPES, DOTWOD_STATUS } from "../types/ui";
 
 export class Wod implements IWod {
     id?: number;
@@ -43,7 +43,7 @@ export class Wod implements IWod {
     finished_at?: Date;
     status?: DOTWOD_STATUS;
     duration?: number;
-    exercises?: Array<IWodExercise>;
+    exercises?: Array<WodExercise>;
     toDTO(): IWodResult {
       return {
         id: this.id,
@@ -65,5 +65,46 @@ export class Wod implements IWod {
         this.status = iWodResult.status;
         this.duration = iWodResult.duration;    
       }
+    }
+  }
+
+  export class WodExercise implements IWodExercise {
+    id?: number;
+    wod_result_id?: number;
+    exerciseId?: number;
+    role?: DOTWOD_EXERCISEROLE;
+    equipmentId?: number;
+    equipmentQty?: number;
+    goal?: number;
+    rounds?: number;
+    achievedOffset?: number;
+    achieved?: number;
+    toDTO(): IWodExercise {
+        return {
+            id: this.id,
+            wod_result_id: this.wod_result_id,
+            exerciseId: this.exerciseId,
+            role: this.role,
+            equipmentId: this.equipmentId,
+            equipmentQty: this.equipmentQty,
+            goal: this.goal,
+            rounds: this.rounds,
+            achievedOffset: this.achievedOffset,
+            achieved: this.achieved
+        }
+    }
+    constructor(iWodExercise?: IWodExercise) {
+        if (iWodExercise){
+            this.id = iWodExercise.id;
+            this.wod_result_id = iWodExercise.wod_result_id;
+            this.exerciseId = iWodExercise.exerciseId;
+            this.role = iWodExercise.role;
+            this.equipmentId = iWodExercise.equipmentId;
+            this.equipmentQty = iWodExercise.equipmentQty;
+            this.goal = iWodExercise.goal;
+            this.rounds = iWodExercise.rounds;
+            this.achievedOffset = iWodExercise.achievedOffset;
+            this.achieved = iWodExercise.achieved;
+        }
     }
   }

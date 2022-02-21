@@ -30,7 +30,7 @@ export class BaseService {
     else {
       this.collection = (await this.api.getJoined(this.db_tables,userId)).data as Array<IRow>;
       (this.collection as Array<IAvailableExercise>)?.forEach( sc => {
-        sc.exercise_equipment_map = sc.exercise_equipment_map && sc.exercise_equipment_map[0] ? sc.exercise_equipment_map : [{ exerciseId: sc.id, user_id: userId }];  
+        sc.available_exercise_equipment_map = sc.available_exercise_equipment_map && sc.available_exercise_equipment_map[0] ? sc.available_exercise_equipment_map : [{ exerciseId: sc.id, user_id: userId }];  
       });
     }
     (this.collection as Array<IAvailableExercise>)?.forEach( sc => {

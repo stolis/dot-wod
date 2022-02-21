@@ -108,13 +108,20 @@ export class ProviderService {
 
   async get(table: DB_TABLES, userId?: string){
     if (userId){
-      return await this.dbClient.from(table).select('*').match({ user_id: userId });  
+      return await this.dbClient.from(table).select('*').match({ user_id: userId }).order('id');  
     }
-    return await this.dbClient.from(table).select('*');
+    return await this.dbClient.from(table).select('*').order('id');
   }
 
   async getBy(table: DB_TABLES, by: any){
-    return await this.dbClient.from(table).select('*').match(by);  
+    return await this.dbClient.from(table).select('*').match(by).order('id');  
+  }
+
+  async getByMany(table: DB_TABLES, values: Array<number>, by: string = 'id'){
+    if (values && values?.length > 0){
+      return await this.dbClient.from(table).select('*').in(by, values).order('id');  
+    }
+    return undefined;
   }
 
   async add(table: DB_TABLES, item: any){
