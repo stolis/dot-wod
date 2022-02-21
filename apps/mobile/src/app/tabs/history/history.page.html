@@ -57,6 +57,40 @@
         </ion-col>
       </ion-row>
     </ion-grid>
+    <ion-list>
+      <ion-item *ngFor="let item of importedWods as Wod; let i = index;">
+        <ion-grid class="no-padded-items">
+          <ion-row>
+            <ion-col size="1" class="ion-align-self-center">
+              <ion-label class="dynText-small" color="medium">{{item.id}}</ion-label>
+            </ion-col>
+            <ion-col size="6" class="ion-align-self-center">
+              <ion-label>{{(formats | filterBy:'id':item.formatId)[0]?.name}} <span class="timecap" *ngIf="item.timecap">{{item.timecap + "'"}}</span><span color="medium"> ({{item.results![0].duration}} sec)</span></ion-label>
+              <ion-label class="dynText-small" color="medium" *ngIf="item.rounds">{{item.rounds ? item.rounds + ' Rounds' : ''}}</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngFor="let ex of item.results![0].exercises">
+            <ion-col size="1" class="ion-align-self-center">
+            </ion-col>
+            <ion-col size="2" class="ion-align-self-center">
+              <ion-chip class="small-label">{{ex.goal}}</ion-chip>
+            </ion-col>
+            <ion-col size="3" class="ion-align-self-center">
+              <ion-label class="small-label">{{(exercises | filterBy:'id':ex.exerciseId)[0]?.name}}</ion-label>
+            </ion-col>
+            <ion-col size="2" class="ion-align-self-center">
+              <ion-chip class="small-label" color="success">{{ex.achieved}}</ion-chip>
+            </ion-col>
+            <ion-col size="4" class="ion-align-self-center justifyRight">
+              <ion-chip class="small-label" color="warning" *ngIf="ex.role !== 'Count'">{{ex.role}}</ion-chip>
+              <ion-chip class="small-label" *ngIf="(equipment | filterBy:'id':ex.equipmentId)[0] as eq">
+                {{eq.name}} {{eq.weight ? ' ' + eq.weight + 'k' : ''}} {{eq.height ? '(' + eq.height + ' cm)' : ''}}
+              </ion-chip>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
     <!-- <ion-grid class="no-padded-items">
       <ion-row>
         <ion-col>
@@ -104,10 +138,10 @@
       </ion-row>
       <ion-row *ngFor="let row of importedWods">
         <ion-col>
-          <ion-label>{{row.id}}</ion-label>
+          <ion-label>{{row.importId}}</ion-label>
         </ion-col>
         <ion-col>
-          <ion-label>{{row.started_at}}</ion-label>
+          <ion-label>{{row.results![0].started_at}}</ion-label>
         </ion-col>
         <ion-col>
           <ion-label>{{row.formatId}}</ion-label>

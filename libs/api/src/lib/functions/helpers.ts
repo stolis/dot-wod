@@ -23,6 +23,48 @@ export function compareWith(f1: any, f2: any) {
   return f1 === f2;
 };
 
+export function mapCommon(source: any, target: any){
+  //Object.entries(source).forEach( (k,v) => {
+  for (let key in source){
+    if (target.hasOwnProperty(key)) {
+      target[key] = source[key];
+    }
+  }
+    
+  //});
+}
+
+export function groupBy(array:Array<any>, f: Function) {
+  let groups:any = {};
+  array.forEach(function (o:any) {
+    var group = JSON.stringify(f(o));
+    console.log(group);
+    groups[group] = groups[group] || [];
+    console.warn(groups[group]);
+    groups[group].push(o);
+  });
+  return Object.keys(groups).map(function (group) {
+  return groups[group];
+  })
+}
+
+/* export function groupBy(list: Array<any>, properties: Array<string>){
+  return list.reduce(function (acc, obj) {
+    properties.forEach( prop => {
+      let key = obj[prop];
+      if (!acc[prop]) {
+        acc[prop] = obj[prop];
+      }  
+    })
+    var key = obj[property];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(obj);
+    return acc;
+  }, []);
+} */
+
 export function dateDiff(a: Date, b: Date) {
   const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate(), a.getHours(), a.getMinutes(), a.getSeconds());
   const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate(), b.getHours(), b.getMinutes(), b.getSeconds());

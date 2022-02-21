@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { dateDiff, DOTWOD_EXERCISEROLE, DOTWOD_HISTORY, EquipmentService, ExerciseService, FormatService, GoogleSheetApiService, HistoryService, IAvailableEquipment, IAvailableExercise, IAvailableFormat, IAvailableSchedule, IWod, ProviderService, ScheduleService, TakeUntilDestroy } from '@dot-wod/api';
+import { dateDiff, DOTWOD_EXERCISEROLE, DOTWOD_HISTORY, EquipmentService, ExerciseService, FormatService, GoogleSheetApiService, groupBy, HistoryService, IAvailableEquipment, IAvailableExercise, IAvailableFormat, IAvailableSchedule, IWod, mapCommon, ProviderService, ScheduleService, TakeUntilDestroy, Wod, WodExercise, WodResult, WodService } from '@dot-wod/api';
 import { Observable } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ type WodPerDay = {
 }
 
 type igSheetMap = {
-  id: number,
+  importId: number,
   started_at: Date,
   format: string,
   timecap: number,
@@ -28,7 +28,7 @@ type igSheetMap = {
 }
 
 const gSheetMap = {
-  id: 'Id',
+  importId: 'Id',
   started_at: 'Date',
   format: 'Format',
   timecap: 'TimeCap',
@@ -58,7 +58,7 @@ export class HistoryPage {
   exercises!: Array<IAvailableExercise>;
   equipment!: Array<IAvailableEquipment>;
 
-  importedWods!: Array<IWod>;
+  importedWods!: Array<Wod>;
   week = ['S','M','T','W','T','F','S'];
   wodsPerDay: Array<WodPerDay> = [...Array(7)].map((_,i) => ({ index: i, duration: 0 }));
   weekTitle!:string;
@@ -69,7 +69,7 @@ export class HistoryPage {
   sheetName: string = 'Wods (Apo)';
 
   constructor(
-      public svc: HistoryService, 
+      public svc: WodService, 
       public googleSheets: GoogleSheetApiService, 
       public api: ProviderService,
       public scheduleSvc: ScheduleService,
@@ -118,21 +118,21 @@ export class HistoryPage {
       }
     });
 
-    this.svc._collection
+    this.svc._wods
     .pipe(takeUntil(this.componentDestroy()))
     .subscribe({
-      next: (wods: Array<IWod>) => {
-        /* wods.forEach( wod => {
-          const started_at:Date = new Date(wod.started_at!.toString());
+      next: (wods: Array<Wod>) => {
+        wods.forEach( wod => {
+          const started_at:Date = new Date(wod!.results![0].started_at!.toString());
           const index = started_at?.getDay();
           const existing = this.wodsPerDay?.find( w => w.index === index);
           if (existing){
-            existing.duration += wod.duration!;
+            existing.duration += wod.results![0].duration!;
           }
           else {
-            this.wodsPerDay = [...(this.wodsPerDay || []),{ index: index, duration: wod.duration!}];
+            this.wodsPerDay = [...(this.wodsPerDay || []),{ index: index, duration: wod.results![0].duration!}];
           }
-        }); */
+        });
       }
     });
   }
@@ -146,36 +146,36 @@ export class HistoryPage {
     this.googleSheets.get(this.documentId,this.sheetName,gSheetMap)
     .pipe(take(1))
     .subscribe((data) => { 
-      this.importedWods = data?.map( (dt) => {
-        const iDt = dt as igSheetMap;
-        return {
-          id: iDt.id,
-          started_at: iDt.started_at,
-          name: 'Imported',
-          user_id: this.api.dbClient.auth.user()?.id,
-          schedule: this.schedules[0].program![iDt.typeId]?.exerciseType?.map(t=>t.type), //TODO
-          formatId : this.formats.find(fm => fm.name === iDt.format)?.id! ?? -1,
-          timecap: iDt.timecap,
-          /* exercises: [
-            { 
-              exerciseId: this.exercises.find(ex => ex.name === iDt.exercise)?.id! ?? -1,
-              rounds: parseInt(iDt.rounds.toString()),
-              equipmentId: this.equipment.find(eq => eq.name === iDt.equipment)?.id ?? -1,
-              equipmentQty: iDt.equipmentQty,
-              achieved: iDt.achieved,
-              goal: iDt.goal,
-              role: this.getRoleFromCounts(iDt.counts) //TODO iDt.counts
-            }
-          ], */
-          duration: this.getSecondsFromDuration(iDt.duration),
-          rounds: parseInt(iDt.rounds.toString()), 
-          inserted_at: iDt.started_at,
-          isSubscribed: true,
-          is_deleted: false,
-          modified_at: new Date,
-          status: 'Logged'
-        } as IWod;
-      })
+      let lastImportedId = -1;
+      (data as Array<igSheetMap>).forEach( item => {
+        if (item.importId !== lastImportedId) {
+          let wod = new Wod();
+          wod.results = [new WodResult()];
+          wod.importId = item.importId;
+          wod.results![0].started_at = item.started_at;
+          wod.name = 'Imported';
+          wod.results![0].user_id = this.api.dbClient.auth.user()?.id;
+          wod.schedule = this.schedules[0].program![item.typeId]?.exerciseType?.map(t=>t.type);
+          wod.formatId = this.formats.find(fm => fm.name === item.format.toUpperCase())?.id! ?? -1;
+          wod.timecap = item.timecap;
+          wod.results![0].duration = this.getSecondsFromDuration(item.duration);
+          wod.rounds = (wod.rounds ?? 0) < item.rounds ? parseInt(item.rounds.toString()) : wod.rounds;
+          wod.results![0].status = 'Logged';
+          this.importedWods = [...(this.importedWods ?? []),wod];
+          lastImportedId = item.importId;
+        }
+        const lastWod = this.importedWods[this.importedWods.length -1];
+
+        const exercise = new WodExercise();
+        exercise.exerciseId = this.exercises.find(ex => ex.name === item.exercise)?.id! ?? -1;
+        exercise.rounds = parseInt(item.rounds.toString());
+        exercise.equipmentId = this.equipment.find(eq => eq.name === item.equipment)?.id ?? -1;
+        exercise.equipmentQty = item.equipmentQty;
+        exercise.achieved = item.achieved;
+        exercise.goal = item.goal;
+        exercise.role = this.getRoleFromCounts(item.counts);
+        lastWod.results![0].exercises = [...(lastWod.results![0].exercises ?? []), exercise];
+      });
       console.log(this.importedWods); 
     });
   }
