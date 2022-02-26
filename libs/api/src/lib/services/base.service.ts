@@ -11,7 +11,7 @@ import { DB_TABLES } from '../types/ui';
 export class BaseService {
   public db_tables!: Array<DB_TABLES>;
   public _collection: BehaviorSubject<Array<IRow>> = new BehaviorSubject([] as Array<IRow>);
-  public collection$ = this._collection.asObservable;
+  public collection$ = this._collection.asObservable();
 
   public set collection(value: Array<IRow>) {
     this._collection.next(value);

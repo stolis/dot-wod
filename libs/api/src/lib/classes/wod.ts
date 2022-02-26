@@ -76,6 +76,9 @@ export class Wod implements IWod {
     equipmentId?: number;
     equipmentQty?: number;
     goal?: number;
+    goal_start?: number;
+    goal_end?: number;
+    goal_increment?: number;
     rounds?: number;
     achievedOffset?: number;
     achieved?: number;
@@ -88,6 +91,9 @@ export class Wod implements IWod {
             equipmentId: this.equipmentId,
             equipmentQty: this.equipmentQty,
             goal: this.goal,
+            goal_start: this.goal_start,
+            goal_end: this.goal_end,
+            goal_increment: this.goal_increment,
             rounds: this.rounds,
             achievedOffset: this.achievedOffset,
             achieved: this.achieved
@@ -102,6 +108,9 @@ export class Wod implements IWod {
             this.equipmentId = iWodExercise.equipmentId;
             this.equipmentQty = iWodExercise.equipmentQty;
             this.goal = iWodExercise.goal;
+            this.goal_start = iWodExercise.goal_start;
+            this.goal_end = iWodExercise.goal_end;
+            this.goal_increment = iWodExercise.goal_increment;
             this.rounds = iWodExercise.rounds;
             this.achievedOffset = iWodExercise.achievedOffset;
             this.achieved = iWodExercise.achieved;

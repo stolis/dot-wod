@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { DB_TABLES, DOTWOD_ALERT, DOTWOD_EXERCISEGAUGE, DOTWOD_EXERCISEROLE, DOTWOD_EXERCISETYPES, DOTWOD_LOGBY, DOTWOD_MUSCLEGROUPS, DOTWOD_STATUS, DOTWOD_TIMEDIRECTION } from "../types/ui";
 import { toDTO } from '../functions/helpers';
 
@@ -32,6 +32,9 @@ export interface IWodExercise {
   equipmentId?: number;
   equipmentQty?: number;
   goal?: number;
+  goal_start?: number;
+  goal_end?: number;
+  goal_increment?: number;
   rounds?: number;
   achievedOffset?: number;
   achieved?: number;
@@ -111,6 +114,7 @@ export interface IMessage {
 export abstract class BaseServiceClass {
   abstract db_tables: Array<DB_TABLES>;
   abstract _collection: BehaviorSubject<Array<IRow>>;
+  abstract collection$: Observable<Array<IRow>>;
   abstract set collection(value: Array<IRow>);
   abstract get collection(): Array<IRow>;
   abstract load:() => void;

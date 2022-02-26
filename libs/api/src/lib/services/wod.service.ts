@@ -10,7 +10,7 @@ import { DB_TABLES } from '../types/ui';
 })
 export class WodService {
   public _wods: BehaviorSubject<Array<Wod>> = new BehaviorSubject([] as Array<Wod>);
-  public wods$ = this._wods.asObservable;
+  public wods$ = this._wods.asObservable();
 
   public set wods(value: Array<Wod>) {
     this._wods.next(value);
@@ -89,6 +89,28 @@ export class WodService {
     }
   }
 
+  async logWod(wod: Wod): Promise<boolean | undefined> {
+    const updated = (await this.api.update(DB_TABLES.WODS,wod.toDTO())).data;
+    if (updated && updated?.length > 0 && updated[0].id) {
+      if (await this.updateWodResult(wod.results![0])) {
+        const exercises = [...wod.results![0].exercises!];
+        const updated = await this.logWodExercise(exercises);
+        if (updated === wod.results![0].exercises!.length) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      return false;
+    }
+  }
+
   async removeWod(wod: Wod) {
     const deleted = (await this.api.remove(DB_TABLES.WODS,wod.id!)).data;
     if (deleted && deleted?.length > 0 && deleted[0].id === wod.id) {
@@ -109,6 +131,16 @@ export class WodService {
     const added = (await this.api.add(DB_TABLES.WOD_RESULTS,wodResult.toDTO())).data;
     if (added && added?.length > 0 && added[0].id) {
       wodResult.id = added[0].id;
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  private async updateWodResult(wodResult: WodResult): Promise<boolean | undefined> {
+    const updated = (await this.api.update(DB_TABLES.WOD_RESULTS,wodResult.toDTO())).data;
+    if (updated && updated?.length > 0 && updated[0].id) {
       return true;
     }
     else {
@@ -166,6 +198,22 @@ export class WodService {
     }
     else {
       return false;
+    }
+  }
+
+  private async logWodExercise(wodExercises: Array<WodExercise>, updated: number = 0): Promise<number>{
+    updated = updated ?? wodExercises.length;
+    if (wodExercises?.length > 0) {
+      const exercise = wodExercises.shift();
+      if (exercise){
+        if (await this.updateWodExercise(exercise)) {
+          updated++;
+        }
+      }
+      return await this.logWodExercise(wodExercises,updated);
+    }
+    else {
+      return updated;
     }
   }
 }

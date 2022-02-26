@@ -22,7 +22,7 @@ import { environment } from '../environments/environment';
     },
     {
       provide: API_KEY,
-      useValue: 'AIzaSyDARaWDqi2iC38w0Fb15ZX1Jf_7geLZwrU'
+      useValue: 'AIzaSyDbYwcfZCC81UdNFQM-nkkV2hHN8QnJHYg'
     },
     GoogleSheetApiService
   ],
