@@ -43,3 +43,4 @@ Thumbs.db
 
 
 .angular
+apps/mobile/src/environments/keys.ts

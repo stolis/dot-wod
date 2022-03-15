@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { API_KEY, ENVIRONMENT, GoogleSheetApiService } from '@dot-wod/api';
 import { environment } from '../environments/environment';
+import { keys } from '../environments/keys';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,7 +23,7 @@ import { environment } from '../environments/environment';
     },
     {
       provide: API_KEY,
-      useValue: 'AIzaSyDbYwcfZCC81UdNFQM-nkkV2hHN8QnJHYg'
+      useValue: keys.googleApi
     },
     GoogleSheetApiService
   ],
